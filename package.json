@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build && webpack",
-    "watch:ng": "ng build --watch --configuration development",
+    "watch:ng": "ng build --watch",
     "watch:webpack": "webpack --watch",
     "watch": "npm run watch:ng && npm run watch:webpack",
     "test": "ng test"
