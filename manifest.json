@@ -1,10 +1,19 @@
 {
-  "name": "Angular Plugin Boilerplate",
-  "id": "1173621087593337844",
+  "name": "chartify",
+  "id": "1361309122482309141",
   "api": "1.0.0",
   "main": "dist/code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
   "editorType": [
-    "figma"
+    "figma",
+    "figjam"
   ],
-  "ui": "dist/ui.html"
+  "ui": "dist/ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
 }

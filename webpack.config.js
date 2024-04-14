@@ -58,4 +58,7 @@ module.exports = (env, argv) => ({
         }),
         new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/ui/]),
     ],
+    watchOptions: {
+        ignored: ['src/files/**/*.js', '**/node_modules']
+    }
 })
