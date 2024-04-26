@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mat-mdc-tab-body-wrapper{
+  @apply flex-auto p-2;
+}

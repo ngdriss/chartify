@@ -12,7 +12,7 @@ module.exports = (env, argv) => ({
 
     entry: {
         ui: ['./dist/main.js', './dist/polyfills.js', './dist/runtime.js'], // The entry point for your UI code
-        code: './code.ts', // The entry point for your plugin code
+        code: './plugin/code.ts', // The entry point for your plugin code
     },
 
     module: {

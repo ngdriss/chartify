@@ -1,16 +1,10 @@
 import 'zone.js';
-import {enableProdMode, importProvidersFrom} from '@angular/core';
+import {importProvidersFrom} from '@angular/core';
 
+import {EntryComponent} from './entry.component';
+import {bootstrapApplication, BrowserModule} from '@angular/platform-browser';
 
-import {environment} from './environments/environment';
-import {AppComponent} from './app/app.component';
-import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
-
-if (environment.production) {
-    enableProdMode();
-}
-
-bootstrapApplication(AppComponent, {
+bootstrapApplication(EntryComponent, {
     providers: [importProvidersFrom(BrowserModule)]
 })
-    .catch(err => console.error(err));
+    .catch(err => console.error(err))

@@ -12,8 +12,9 @@
   ],
   "ui": "dist/ui.html",
   "networkAccess": {
+    "reasoning": "Development purposes only.",
     "allowedDomains": [
-      "none"
+      "*"
     ]
   }
 }
