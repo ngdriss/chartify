@@ -3,20 +3,20 @@ import * as color from "color";
 
 class ChartGeneratorFactory {
     static create(type: string) {
-    switch (type) {
-      case 'line':
-        return new LineChartGenerator();
-        case 'area':
-        return new AreaChartGenerator();
-      case 'bar':
-        return new BarChartGenerator();
-      default:
-        throw new Error('Unknown chart type');
+        switch (type) {
+            case 'line':
+                return new LineChartGenerator();
+            case 'area':
+                return new AreaChartGenerator();
+            case 'bar':
+                return new BarChartGenerator();
+            default:
+                throw new Error('Unknown chart type');
+        }
     }
-  }
 }
 
-export { ChartGeneratorFactory };
+export {ChartGeneratorFactory};
 
 interface ChartGenerator {
     generate(data: any): any;
@@ -39,15 +39,16 @@ class LineChartGenerator implements ChartGenerator {
             .domain([0, d3.max(data.flat(), d => d.y)])
             .range([height, 0]);
 
-        const line = d3.line<{x: number, y: number}>()
+        const line = d3.line<{ x: number, y: number }>()
             .x(d => x(d.x))
             .y(d => y(d.y));
 
+        let i = 0;
         data.forEach((lineData: any) => {
             svg.append('path')
                 .datum(lineData)
                 .attr('fill', 'none')
-                .attr('stroke',(d, i) => d3.schemeCategory10[i % 10])
+                .attr('stroke', d3.schemeCategory10[i++ % 10])
                 .attr('stroke-width', 1.2)
                 .attr('d', line);
         });
@@ -71,16 +72,16 @@ class AreaChartGenerator extends LineChartGenerator {
             .domain([0, d3.max(data.flat(), d => d.y)])
             .range([height, 0]);
 
-        const area: any = d3.area<{x: number, y: number}>()
+        const area: any = d3.area<{ x: number, y: number }>()
             .x(d => x(d.x))
             .y0(height) // Bottom edge of the area (base)
             .y1(d => y(d.y)); // Top edge of the area (actual data)
-
+        let i = 0;
         gData.forEach((lineData: any) => {
             svg.append("path")
                 .datum(lineData)
                 .attr("class", "area")
-                .attr("fill", (d: any, i: number) => color(d3.schemeCategory10[i % 10]).fade(0.3).hexa())
+                .attr("fill", color(d3.schemeCategory10[i++ % 10]).fade(0.3).hexa())
                 .attr("d", area);
         });
         return {svg, data: gData};
