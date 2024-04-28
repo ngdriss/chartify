@@ -6,6 +6,12 @@ figma.ui.onmessage = (action: PluginMessage) => {
     actionHandler.execute();
 };
 
+export type CurrentNode = {
+    width: number;
+    height: number;
+    id: string;
+}
+
 function sendSelectedNode() {
     if (figma.currentPage.selection.length > 0) {
         const node = figma.currentPage.selection[0];

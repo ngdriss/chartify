@@ -1,15 +1,20 @@
 import {inject, Injectable} from "@angular/core";
 import {FigmaService} from "./figma.service";
 import {SelectedNodeMetaMessage} from "../../plugin/plugin-message";
+import {CurrentNode} from "../../plugin/code";
 
 @Injectable({
     providedIn: 'root'
 })
 export class CurrentFigmaNodeService {
     figmaService = inject(FigmaService);
-    private _currentNode?: { width: number; height: number, id: string };
-    get currentNode() {
-        if (!this._currentNode) throw new Error('No current node');
+    private _currentNode?: CurrentNode;
+    get currentNode(): CurrentNode {
+        if (!this._currentNode) return ({
+            width: 600,
+            height: 600,
+            id: null
+        });
         return this._currentNode;
     }
 

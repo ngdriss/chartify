@@ -5,6 +5,8 @@ import {EntryComponent} from './entry.component';
 import {bootstrapApplication, BrowserModule} from '@angular/platform-browser';
 
 bootstrapApplication(EntryComponent, {
-    providers: [importProvidersFrom(BrowserModule)]
+    providers: [
+        importProvidersFrom(BrowserModule)
+    ]
 })
     .catch(err => console.error(err))

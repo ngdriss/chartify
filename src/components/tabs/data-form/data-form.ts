@@ -1,70 +1,56 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {MatFormField, MatLabel} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
-import {DataService} from "../../data.service";
-import {startWith} from "rxjs/operators";
-import {MatOption, MatSelect} from "@angular/material/select";
+import {
+    ChangeDetectionStrategy,
+    Component,
+    effect,
+    inject,
+    Type, ViewChild,
+    ViewContainerRef
+} from '@angular/core';
+import {AppStateService} from 'src/components/app-state.service';
+import {toSignal} from "@angular/core/rxjs-interop";
+import {LineChartForm} from "./line-chart-form/line-chart-form";
+import {AreaChartForm} from "./area-chart-form/area-chart-form";
+import {BarChartForm} from "./bar-chart-form/bar-chart-form";
+import {PieChartForm} from "./pie-chart-form/pie-chart-form";
+import {DonutChartForm} from "./donut-chart-form/donut-chart-form";
+import {FormBuilder} from "@angular/forms";
+import {TitleCasePipe} from "@angular/common";
 
 @Component({
     selector: 'kj-data-form',
     standalone: true,
-    imports: [
-        MatFormField,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        MatInput,
-        ReactiveFormsModule
-    ],
     providers: [FormBuilder],
     template: `
-        <ng-container [formGroup]="fg">
-            <mat-form-field>
-                <mat-label>Lines</mat-label>
-                <input matInput type="number" formControlName="lines" placeholder="How many lines ?">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Number of points</mat-label>
-                <input matInput type="number" formControlName="points" placeholder="How many points ?">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Max Y</mat-label>
-                <input matInput type="number" formControlName="rangeY" placeholder="Max Y-axis number ?">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Max X</mat-label>
-                <input matInput type="number" formControlName="rangeX" placeholder="Max X-axis number ?">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Distribution</mat-label>
-                <select matNativeControl formControlName="distribution">
-                    <option value="random">Random</option>
-                    <option value="trend-up">Trend up</option>
-                    <option value="trend-down">Trend down</option>
-                </select>
-            </mat-form-field>
-        </ng-container>
+        <h4>{{selectedChartType() | titlecase}} chart</h4>
+        <ng-container #vcr></ng-container>
     `,
     styleUrl: './data-form.scss',
+    imports: [
+        TitleCasePipe
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataForm {
-    fb = inject(FormBuilder);
-    fg = this.fb.group({
-        lines: this.fb.nonNullable.control(3),
-        points: this.fb.nonNullable.control(5),
-        rangeX: this.fb.nonNullable.control(100),
-        rangeY: this.fb.nonNullable.control(100),
-        distribution: this.fb.nonNullable.control("random")
-    })
-    dataService = inject(DataService);
+    appStateService = inject(AppStateService);
+    selectedChartType = toSignal(this.appStateService.select$('selectedChartType'));
+    registry: Map<string, Type<any>>;
+
+    @ViewChild('vcr', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
 
     constructor() {
-        this.fg.valueChanges
-            .pipe(startWith(this.fg.value))
-            .subscribe((value) => {
-                this.dataService.data = value as any;
-            })
+        this.registry = new Map([
+            ['line', LineChartForm],
+            ['area', AreaChartForm],
+            ['bar', BarChartForm],
+            ['pie', PieChartForm],
+            ['donut', DonutChartForm]
+        ]);
+
+        effect(() => {
+            const selectedChartType = this.selectedChartType();
+            this.container.clear();
+            const ref = this.container?.createComponent(this.registry.get(selectedChartType)!)
+            ref.changeDetectorRef.markForCheck();
+        })
     }
 }

@@ -43,19 +43,14 @@ export class CreateChartAction extends BaseAction implements ActionHandler {
         const svgNode = globalFigma.createNodeFromSvg(input.svg);
 
         globalFigma.getNodeByIdAsync(input.nodeId)
-
             .then((currentNode?: SceneNode) => {
-                if (!currentNode) {
+                if (!currentNode || !currentNode.parent) {
+                    globalFigma.currentPage.appendChild(svgNode);
                     return;
                 }
-                if (currentNode.parent) {
-                    currentNode.parent.appendChild(svgNode);
-                    currentNode.remove();
-                    globalFigma.currentPage.selection = [svgNode];
-                }
-                else {
-                    globalFigma.currentPage.appendChild(svgNode);
-                }
+                currentNode.parent.appendChild(svgNode);
+                currentNode.remove();
+                globalFigma.currentPage.selection = [svgNode];
             })
     }
 }

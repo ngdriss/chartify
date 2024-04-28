@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {LinearPointGeneratorInput} from "./point-generator";
+import {CoordinateGeneratorInput} from "../chart/data-generator";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  data!: LinearPointGeneratorInput
+  data!: CoordinateGeneratorInput
 }

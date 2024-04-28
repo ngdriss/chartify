@@ -1,6 +1,11 @@
 :host {
   @apply block flex-auto;
 }
-mat-tab-group {
+
+::ng-deep mat-tab-group {
   @apply h-full;
+
+  ::ng-deep .mat-mdc-tab-body-wrapper {
+    @apply flex-auto p-4;
+  }
 }
