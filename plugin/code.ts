@@ -6,14 +6,14 @@ figma.ui.onmessage = (action: PluginMessage) => {
     actionHandler.execute();
 };
 
-if (figma.currentPage.selection.length > 0) {
-    const node = figma.currentPage.selection[0];
-    figma.ui.postMessage({type: 'selected-node-meta', data: {width: node.width, height: node.height}});
-}
-
-figma.on('selectionchange', () => {
+function sendSelectedNode() {
     if (figma.currentPage.selection.length > 0) {
         const node = figma.currentPage.selection[0];
-        figma.ui.postMessage({type: 'selected-node-meta', data: {width: node.width, height: node.height}});
+        figma.ui.postMessage({type: 'selected-node-meta', width: node.width, height: node.height, id: node.id});
     }
+}
+sendSelectedNode();
+
+figma.on('selectionchange', () => {
+    sendSelectedNode();
 })

@@ -20,7 +20,7 @@ interface ChartGenerator {
 }
 
 class LineChartGenerator implements ChartGenerator {
-    generate(input: any) {
+    generate(input: any): string {
         const width = input.width
         const height = input.height
         const data = input.data as any[][];
@@ -28,38 +28,34 @@ class LineChartGenerator implements ChartGenerator {
             .attr('width', width)
             .attr('height', height);
 
-        const margin = { top: 20, right: 30, bottom: 30, left: 40 };
-        const innerWidth = width - margin.left - margin.right;
-        const innerHeight = height - margin.top - margin.bottom;
-
         const x = d3.scaleLinear()
             .domain([0, d3.max(data[0], d => d.x)])
-            .range([margin.left, innerWidth]);
+            .range([0, width]);
 
         const y = d3.scaleLinear()
             .domain([0, d3.max(data.flat(), d => d.y)])
-            .range([innerHeight, margin.top]);
+            .range([height, 0]);
 
         const line = d3.line<{x: number, y: number}>()
             .x(d => x(d.x))
             .y(d => y(d.y));
 
+        let i = 0;
         data.forEach(lineData => {
             svg.append('path')
                 .datum(lineData)
                 .attr('fill', 'none')
-                .attr('stroke', 'steelblue')
-                .attr('stroke-width', 2)
+                .attr('stroke', d3.schemeCategory10[i++ % 10])
+                .attr('stroke-width', 1)
                 .attr('d', line);
         });
 
-        return svg.node()?.outerHTML
+        return svg.node()?.outerHTML || '';
     }
 }
 
 class BarChartGenerator implements ChartGenerator {
     generate(data: any) {
-        console.log('Generating bar chart with data:', data);
         return 'bar-chart-svg';
     }
 }

@@ -7,11 +7,15 @@ import {SelectedNodeMetaMessage} from "../../plugin/plugin-message";
 })
 export class CurrentFigmaNodeService {
     figmaService = inject(FigmaService);
-    currentNode?: { width: number; height: number };
+    private _currentNode?: { width: number; height: number, id: string };
+    get currentNode() {
+        if (!this._currentNode) throw new Error('No current node');
+        return this._currentNode;
+    }
 
     constructor() {
         this.figmaService.onAction('selected-node-meta', (action) => {
-            this.currentNode = (action as SelectedNodeMetaMessage).data;
+            this._currentNode = (action as SelectedNodeMetaMessage);
         });
     }
 }

@@ -1,22 +1,19 @@
 import {globalFigma} from "./shared";
 
-export type PluginMessage = {
-    type: string;
-    data: any;
-}
+export type PluginMessage<Input extends any = any> = { type: string; } & Input;
 
-export type CreateChartMessage = {
+export type CreateChartMessage =  PluginMessage<{
     type: 'create-chart';
-    data: string
-}
+    svg: string
+    nodeId: string
+}>
 
-export type SelectedNodeMetaMessage = {
+export type SelectedNodeMetaMessage =  PluginMessage<{
     type: 'selected-node-meta';
-    data: {
-        width: number;
-        height: number;
-    }
-}
+    width: number;
+    height: number;
+    id: string;
+}>
 
 export class ActionHandlerFactory {
     static create(action: PluginMessage) {
@@ -34,18 +31,32 @@ export interface ActionHandler {
 }
 
 export class BaseAction {
-    constructor(protected action: PluginMessage) {
-    }
+    constructor(protected action: PluginMessage) {}
 }
 
 export class CreateChartAction extends BaseAction implements ActionHandler {
     execute() {
-        this.createLineChart(this.action.data)
+        this.createLineChart(this.action)
     }
-    private createLineChart(input: any) {
+    private createLineChart(input: CreateChartMessage) {
         // Create a Figma node representing the SVG
-        const svgNode = globalFigma.createNodeFromSvg(input);
-        globalFigma.currentPage.appendChild(svgNode);
+        const svgNode = globalFigma.createNodeFromSvg(input.svg);
+
+        globalFigma.getNodeByIdAsync(input.nodeId)
+
+            .then((currentNode?: SceneNode) => {
+                if (!currentNode) {
+                    return;
+                }
+                if (currentNode.parent) {
+                    currentNode.parent.appendChild(svgNode);
+                    currentNode.remove();
+                    globalFigma.currentPage.selection = [svgNode];
+                }
+                else {
+                    globalFigma.currentPage.appendChild(svgNode);
+                }
+            })
     }
 }
 
