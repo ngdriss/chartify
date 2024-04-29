@@ -135,6 +135,7 @@ class PieChartGenerator implements ChartGenerator {
         const height = input.height
         const data = input.data as number[];
         const radius = Math.min(width, height) / 2;
+        const cornerRadius = input.options?.cornerRadius || 10;
 
         const svg = d3.create('svg')
             .attr('width', width)
@@ -146,6 +147,7 @@ class PieChartGenerator implements ChartGenerator {
             .padAngle(0.01);
         const arc: any = d3.arc()
             .innerRadius(0)
+            .cornerRadius(cornerRadius)
             .outerRadius(radius);
 
         const arcs = pie(data);
@@ -168,6 +170,7 @@ class DonutChartGenerator implements ChartGenerator {
         const data = input.data as number[];
         const radius = Math.min(width, height) / 2;
         const innerRadius = input.options?.innerRadius || radius * 0.5;
+        const cornerRadius = input.options?.cornerRadius || 10;
 
         const svg = d3.create('svg')
             .attr('width', width)
@@ -179,6 +182,7 @@ class DonutChartGenerator implements ChartGenerator {
             .padAngle(0.01);
         const arc: any = d3.arc()
             .innerRadius(innerRadius)
+            .cornerRadius(cornerRadius)
             .outerRadius(radius);
 
         const arcs = pie(data);

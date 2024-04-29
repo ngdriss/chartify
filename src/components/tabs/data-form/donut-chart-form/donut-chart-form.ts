@@ -27,6 +27,10 @@ import {ReactiveFormsModule} from "@angular/forms";
         <mat-label>Inner Radius</mat-label>
         <input matInput type="number" formControlName="innerRadius" placeholder="inner Radius ?">
       </mat-form-field>
+      <mat-form-field>
+        <mat-label>Corner Radius</mat-label>
+        <input matInput type="number" formControlName="cornerRadius" placeholder="corner Radius ?">
+      </mat-form-field>
     </ng-container>
   `,
   styleUrl: './donut-chart-form.scss',
@@ -40,6 +44,7 @@ export class DonutChartForm extends BaseChartForm {
       entries: this.fb.nonNullable.control(5),
       maxValue: this.fb.nonNullable.control(100),
       innerRadius: this.fb.nonNullable.control(350),
+      cornerRadius: this.fb.nonNullable.control(10)
     })
     this.init()
   }

@@ -23,6 +23,10 @@ import {ReactiveFormsModule} from "@angular/forms";
         <mat-label>Max Value</mat-label>
         <input matInput type="number" formControlName="maxValue" placeholder="maxValue ?">
       </mat-form-field>
+      <mat-form-field>
+        <mat-label>Corner Radius</mat-label>
+        <input matInput type="number" formControlName="cornerRadius" placeholder="corner Radius ?">
+      </mat-form-field>
     </ng-container>
   `,
   styleUrl: './pie-chart-form.scss',
@@ -34,7 +38,8 @@ export class PieChartForm extends BaseChartForm {
     super();
     this.fg = this.fb.group({
       entries: this.fb.nonNullable.control(5),
-      maxValue: this.fb.nonNullable.control(100)
+      maxValue: this.fb.nonNullable.control(100),
+      cornerRadius: this.fb.nonNullable.control(10)
     })
     this.init()
   }
