@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {MatButton} from "@angular/material/button";
+import {MatButtonModule} from "@angular/material/button";
 import {ChartService} from "../../chart/chart.service";
 import {AppStateService} from "../app-state.service";
 
@@ -7,7 +7,7 @@ import {AppStateService} from "../app-state.service";
   selector: 'kj-footer',
   standalone: true,
   imports: [
-      MatButton
+      MatButtonModule
   ],
   template: `
     <button mat-flat-button color="accent" (click)="createChart()">Create</button>
