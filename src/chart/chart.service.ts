@@ -20,8 +20,10 @@ export class ChartService {
         const input = {
             data,
             width: this.currentFigmaNodeService.currentNode?.width,
-            height: this.currentFigmaNodeService.currentNode?.height
+            height: this.currentFigmaNodeService.currentNode?.height,
+            options
         }
+        console.log('Input', input);
         const {svg} = chartGenerator.generate(input);
         const action: CreateChartMessage = {
             type: 'create-chart',

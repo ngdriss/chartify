@@ -10,6 +10,10 @@ class ChartGeneratorFactory {
                 return new AreaChartGenerator();
             case 'bar':
                 return new BarChartGenerator();
+            case 'pie':
+                return new PieChartGenerator();
+                case 'donut':
+                return new DonutChartGenerator();
             default:
                 throw new Error('Unknown chart type');
         }
@@ -93,17 +97,17 @@ class BarChartGenerator implements ChartGenerator {
         const width = input.width
         const height = input.height
         const data = input.data as number[];
+        const barWidth = input.options?.barWidth;
 
         const svg = d3.create('svg')
             .attr('width', width)
             .attr('height', height);
 
-
         const x = d3.scaleBand()
             // @ts-ignore
             .domain(d3.range(data.length))
             .range([0, width])
-            .paddingInner(0.1);
+            .paddingInner(0.05);
 
         const y = d3.scaleLinear()
             .domain([0, d3.max(data)])
@@ -117,9 +121,74 @@ class BarChartGenerator implements ChartGenerator {
             // @ts-ignore
             .attr("x", (d, i) => x(i))
             .attr("y", d => y(d))
-            .attr("width", x.bandwidth())
+            .attr("width", barWidth || x.bandwidth())
             .attr("height", d => height - y(d))
             .attr("fill", (d, i) => d3.schemeCategory10[i % 10]);
+
+        return {svg, data}
+    }
+}
+
+class PieChartGenerator implements ChartGenerator {
+    generate(input: any) {
+        const width = input.width
+        const height = input.height
+        const data = input.data as number[];
+        const radius = Math.min(width, height) / 2;
+
+        const svg = d3.create('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        const pie = d3.pie()
+            .padAngle(0.01);
+        const arc: any = d3.arc()
+            .innerRadius(0)
+            .outerRadius(radius);
+
+        const arcs = pie(data);
+
+        svg.selectAll("path")
+            .data(arcs)
+            .enter()
+            .append("path")
+            .attr("d", arc)
+            .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
+
+        return {svg, data}
+    }
+}
+
+class DonutChartGenerator implements ChartGenerator {
+    generate(input: any) {
+        const width = input.width
+        const height = input.height
+        const data = input.data as number[];
+        const radius = Math.min(width, height) / 2;
+        const innerRadius = input.options?.innerRadius || radius * 0.5;
+
+        const svg = d3.create('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        const pie = d3.pie()
+            .padAngle(0.01);
+        const arc: any = d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(radius);
+
+        const arcs = pie(data);
+
+        svg.selectAll("path")
+            .data(arcs)
+            .enter()
+            .append("path")
+            .attr("d", arc)
+            .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
 
         return {svg, data}
     }

@@ -107,6 +107,8 @@ export class PointGeneratorFactory {
             case 'area':
                 return new CoordinateGenerator();
             case 'bar':
+            case 'pie':
+            case 'donut':
                 return new SimpleGenerator();
             default:
                 throw new Error('Unknown point generator type')

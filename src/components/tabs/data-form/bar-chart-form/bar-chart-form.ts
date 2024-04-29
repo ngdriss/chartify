@@ -23,6 +23,10 @@ import {BaseChartForm} from "../base-chart-form";
                 <mat-label>Max Value</mat-label>
                 <input matInput type="number" formControlName="maxValue" placeholder="maxValue ?">
             </mat-form-field>
+            <mat-form-field>
+                <mat-label>Bar width</mat-label>
+                <input matInput type="number" formControlName="barWidth" placeholder="bar width ?">
+            </mat-form-field>
         </ng-container>
     `,
     styleUrl: './bar-chart-form.scss',
@@ -34,7 +38,8 @@ export class BarChartForm extends BaseChartForm {
         super();
         this.fg = this.fb.group({
             entries: this.fb.nonNullable.control(5),
-            maxValue: this.fb.nonNullable.control(100)
+            maxValue: this.fb.nonNullable.control(100),
+            barWidth: this.fb.nonNullable.control(20)
         })
         this.init()
     }
