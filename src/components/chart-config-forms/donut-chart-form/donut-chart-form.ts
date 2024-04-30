@@ -43,7 +43,7 @@ export class DonutChartForm extends BaseChartForm {
     this.fg = this.fb.group({
       entries: this.fb.nonNullable.control(5),
       maxValue: this.fb.nonNullable.control(100),
-      innerRadius: this.fb.nonNullable.control(350),
+      innerRadius: this.fb.nonNullable.control(150),
       cornerRadius: this.fb.nonNullable.control(10)
     })
     this.init()

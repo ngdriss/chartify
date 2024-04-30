@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import { get } from "lodash";
+import {get, isNil} from "lodash";
 import {BehaviorSubject} from "rxjs";
-import {map} from "rxjs/operators";
+import {distinctUntilChanged, filter, map} from "rxjs/operators";
 
 export interface AppState {
     selectedChartType?: string;
@@ -19,7 +19,7 @@ export class AppStateService {
     _state$ = new BehaviorSubject<AppState>(this.state);
 
     get state$() {
-        return this._state$.asObservable();
+        return this._state$.asObservable()
     }
 
     updateState(partialState: any) {
@@ -29,7 +29,8 @@ export class AppStateService {
 
     select$(path: string) {
         return this.state$.pipe(
-            map(state => get(state, path))
+            map(state => get(state, path)),
+            distinctUntilChanged()
         )
     }
 }

@@ -11,7 +11,6 @@ import {CreateChartMessage} from "../../plugin/plugin-message";
 export class ChartService {
     figmaService = inject(FigmaService);
     currentFigmaNodeService = inject(CurrentFigmaNodeService);
-
     createChart(options: any, type: string) {
         console.log('Creating chart', options, type);
         const pointGenerator = PointGeneratorFactory.create(type);
@@ -31,5 +30,20 @@ export class ChartService {
             nodeId: this.currentFigmaNodeService.currentNode?.id
         }
         this.figmaService.sendAction(action)
+    }
+
+    previewChart(options: any, type: string) {
+        const pointGenerator = PointGeneratorFactory.create(type);
+        const chartGenerator = ChartGeneratorFactory.create(type);
+        const data = pointGenerator.generate(options, this.currentFigmaNodeService.currentNode);
+        const input = {
+            data,
+            width: 500,
+            height: 350,
+            options,
+            isPreview: true
+        }
+        console.log('Input', input);
+        chartGenerator.generate(input);
     }
 }

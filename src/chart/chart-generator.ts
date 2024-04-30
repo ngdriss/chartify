@@ -26,14 +26,29 @@ interface ChartGenerator {
     generate(data: any): any;
 }
 
-class LineChartGenerator implements ChartGenerator {
+abstract class BaseChartGenerator implements ChartGenerator {
+    abstract generate(input: any): any;
+    createSvg(width: number, height: number, isPreview = false) {
+        let svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>;
+        if (isPreview) {
+            d3.select('#preview').selectAll('*').remove();
+            svg =  d3.select('#preview')
+                .append('svg');
+        } else {
+            svg = d3.create('svg')
+        }
+        return svg
+            .attr('width', width)
+            .attr('height', height);
+    }
+}
+
+class LineChartGenerator extends BaseChartGenerator implements ChartGenerator {
     generate(input: any): any {
         const width = input.width
         const height = input.height
         const data = input.data as any[][];
-        const svg = d3.create('svg')
-            .attr('width', width)
-            .attr('height', height);
+        const svg = this.createSvg(width, height, input.isPreview)
 
         const x = d3.scaleLinear()
             .domain([0, d3.max(data[0], d => d.x)])
@@ -92,16 +107,14 @@ class AreaChartGenerator extends LineChartGenerator {
     }
 }
 
-class BarChartGenerator implements ChartGenerator {
+class BarChartGenerator extends BaseChartGenerator  implements ChartGenerator {
     generate(input: any) {
         const width = input.width
         const height = input.height
         const data = input.data as number[];
         const barWidth = input.options?.barWidth;
 
-        const svg = d3.create('svg')
-            .attr('width', width)
-            .attr('height', height);
+        const svg = this.createSvg(width, height, input.isPreview)
 
         const x = d3.scaleBand()
             // @ts-ignore
@@ -129,7 +142,7 @@ class BarChartGenerator implements ChartGenerator {
     }
 }
 
-class PieChartGenerator implements ChartGenerator {
+class PieChartGenerator extends BaseChartGenerator  implements ChartGenerator {
     generate(input: any) {
         const width = input.width
         const height = input.height
@@ -137,9 +150,7 @@ class PieChartGenerator implements ChartGenerator {
         const radius = Math.min(width, height) / 2;
         const cornerRadius = input.options?.cornerRadius || 10;
 
-        const svg = d3.create('svg')
-            .attr('width', width)
-            .attr('height', height)
+        const svg = this.createSvg(width, height, input.isPreview)
             .append("g")
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -163,7 +174,7 @@ class PieChartGenerator implements ChartGenerator {
     }
 }
 
-class DonutChartGenerator implements ChartGenerator {
+class DonutChartGenerator extends BaseChartGenerator  implements ChartGenerator {
     generate(input: any) {
         const width = input.width
         const height = input.height
@@ -172,9 +183,7 @@ class DonutChartGenerator implements ChartGenerator {
         const innerRadius = input.options?.innerRadius || radius * 0.5;
         const cornerRadius = input.options?.cornerRadius || 10;
 
-        const svg = d3.create('svg')
-            .attr('width', width)
-            .attr('height', height)
+        const svg = this.createSvg(width, height, input.isPreview)
             .append("g")
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 

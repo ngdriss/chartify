@@ -2,7 +2,7 @@ import {Directive, inject} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {startWith} from "rxjs/operators";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {AppStateService} from "../../app-state.service";
+import {AppStateService} from "../app-state.service";
 
 @Directive()
 export class BaseChartForm {

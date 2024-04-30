@@ -10,7 +10,7 @@ import {AppStateService} from "../app-state.service";
       MatButtonModule
   ],
   template: `
-    <button mat-flat-button color="accent" (click)="createChart()">Create</button>
+    <button mat-flat-button (click)="createChart()">Create</button>
   `,
   styleUrl: './footer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

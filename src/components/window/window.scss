@@ -1,9 +1,9 @@
 :host {
   @apply w-screen h-screen bg-gray-50;
-  @apply flex flex-nowrap;
+  @apply flex flex-nowrap flex-col;
 }
 
 .window-body {
-    @apply flex-1;
+    @apply flex-1 overflow-y-auto;
     @apply flex flex-col;
 }

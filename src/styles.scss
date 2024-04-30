@@ -6,12 +6,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
 $theme: matx.define-theme((
         color: (
                 theme-type: light,
-                primary: matx.$m3-azure-palette,
-                tertiary: matx.$m3-blue-palette,
+                primary: matx.$m3-azure-palette
         )
 ));
 
@@ -21,4 +19,3 @@ $theme: matx.define-theme((
 :root {
   @include mat.all-component-themes($theme);
 }
-

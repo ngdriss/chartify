@@ -1,20 +1,19 @@
 import {Component} from '@angular/core';
-import {NgSwitch, NgSwitchDefault, NgSwitchCase} from '@angular/common';
 import {Window} from "./components/window/window";
 import {Footer} from "./components/footer/footer";
-import {Sidebar} from "./components/sidebar/sidebar";
-import {Tabs} from "./components/tabs/tabs";
+import {Preview} from "./components/preview/preview";
+import {Body} from "./components/body/body";
 
 @Component({
     selector: 'app-root',
     template: `
         <kj-window>
-            <kj-sidebar/>
-            <kj-tabs/>
+            <kj-preview/>
+            <kj-body/>
             <kj-footer/>
         </kj-window>
     `,
     standalone: true,
-    imports: [NgSwitch, NgSwitchDefault, NgSwitchCase, Window, Footer,Tabs, Sidebar]
+    imports: [Window, Footer, Preview, Body]
 })
 export class EntryComponent {}
