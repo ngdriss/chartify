@@ -26,6 +26,7 @@ import {NgIf} from "@angular/common";
                 <kj-slider name="lines" label="Lines" min="1" max="20" step="1"/>
                 <kj-slider name="points" label="Number of points" min="1" max="30" step="1"/>
                 <kj-checkbox name="displayPoints" label="Display Points"/>
+                <kj-checkbox name="dashed" label="Dashed"/>
                 <kj-checkbox name="showAxis" label="Show Axis"/>
                 <ng-container *ngIf="fg.get('showAxis').value">
                     <kj-slider name="rangeY" label="Max Y" min="10" max="1000" step="10"/>
@@ -47,6 +48,7 @@ export class LineChartForm extends BaseChartForm {
             distribution: this.fb.nonNullable.control(initialFormData?.distribution),
             curve: this.fb.nonNullable.control(initialFormData?.curve),
             displayPoints: this.fb.nonNullable.control(initialFormData?.displayPoints),
+            dashed: this.fb.nonNullable.control(initialFormData?.dashed),
             showAxis: this.fb.nonNullable.control(initialFormData?.showAxis),
             rangeX: this.fb.nonNullable.control(initialFormData?.rangeX),
             rangeY: this.fb.nonNullable.control(initialFormData?.rangeY),
@@ -61,6 +63,7 @@ export class LineChartForm extends BaseChartForm {
             distribution: "random",
             curve: "simple",
             displayPoints: false,
+            dashed: false,
             showAxis: false,
             rangeX: 100,
             rangeY: 100

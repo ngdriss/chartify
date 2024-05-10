@@ -50,7 +50,7 @@ class LineChartGenerator extends BaseChartGenerator implements ChartGenerator {
         const height = input.height
         const data = input.data as any[][];
         const curved = input.options.curve === "curved";
-        const displayPoints = input.options.displayPoints;
+        const {displayPoints, dashed} = input.options;
         const svg = this.createSvg(width, height, input.isPreview)
 
         const x = d3.scaleLinear()
@@ -72,6 +72,7 @@ class LineChartGenerator extends BaseChartGenerator implements ChartGenerator {
                 .attr('fill', 'none')
                 .attr('stroke', d3.schemeCategory10[i % 10])
                 .attr('stroke-width', 1.2)
+                .style("stroke-dasharray", dashed ? ("3, 3") : null)
                 .attr('d', line);
 
             if (displayPoints) {
@@ -125,6 +126,14 @@ class AreaChartGenerator extends LineChartGenerator {
 
 class BarChartGenerator extends BaseChartGenerator implements ChartGenerator {
     generate(input: any) {
+        const direction = input.options?.direction || 'vertical'
+        if (direction === 'vertical') {
+            return this.vertical(input)
+        }
+        return this.horizontal(input)
+    }
+
+    vertical(input: any) {
         const width = input.width
         const height = input.height
         const data = input.data as number[];
@@ -152,6 +161,39 @@ class BarChartGenerator extends BaseChartGenerator implements ChartGenerator {
             .attr("y", d => y(d))
             .attr("width", barWidth || x.bandwidth())
             .attr("height", d => height - y(d))
+            .attr("fill", (d, i) => d3.schemeCategory10[i % 10]);
+
+        return {svg, data}
+    }
+
+    horizontal(input: any) {
+        const width = input.width
+        const height = input.height
+        const data = input.data as number[];
+        const barWidth = input.options?.barWidth;
+
+        const svg = this.createSvg(width, height, input.isPreview)
+
+        const y = d3.scaleBand()
+            // @ts-ignore
+            .domain(d3.range(data.length))
+            .range([0, height])
+            .paddingInner(0.05);
+
+        const x = d3.scaleLinear()
+            .domain([0, d3.max(data)])
+            .range([0, width]);
+
+        // Create bars
+        svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", 0)
+            // @ts-ignore
+            .attr("y", (d, i) => y(i))
+            .attr("width", d => width - x(d))
+            .attr("height", barWidth || y.bandwidth())
             .attr("fill", (d, i) => d3.schemeCategory10[i % 10]);
 
         return {svg, data}
