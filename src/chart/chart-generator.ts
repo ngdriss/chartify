@@ -12,7 +12,7 @@ class ChartGeneratorFactory {
                 return new BarChartGenerator();
             case 'pie':
                 return new PieChartGenerator();
-                case 'donut':
+            case 'donut':
                 return new DonutChartGenerator();
             default:
                 throw new Error('Unknown chart type');
@@ -28,11 +28,12 @@ interface ChartGenerator {
 
 abstract class BaseChartGenerator implements ChartGenerator {
     abstract generate(input: any): any;
+
     createSvg(width: number, height: number, isPreview = false) {
         let svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>;
         if (isPreview) {
             d3.select('#preview').selectAll('*').remove();
-            svg =  d3.select('#preview')
+            svg = d3.select('#preview')
                 .append('svg');
         } else {
             svg = d3.create('svg')
@@ -48,6 +49,8 @@ class LineChartGenerator extends BaseChartGenerator implements ChartGenerator {
         const width = input.width
         const height = input.height
         const data = input.data as any[][];
+        const curved = input.options.curve === "curved";
+        const displayPoints = input.options.displayPoints;
         const svg = this.createSvg(width, height, input.isPreview)
 
         const x = d3.scaleLinear()
@@ -60,16 +63,26 @@ class LineChartGenerator extends BaseChartGenerator implements ChartGenerator {
 
         const line = d3.line<{ x: number, y: number }>()
             .x(d => x(d.x))
-            .y(d => y(d.y));
+            .y(d => y(d.y))
+            .curve(curved ? d3.curveCatmullRom : d3.curveLinear);
 
-        let i = 0;
-        data.forEach((lineData: any) => {
+        data.forEach((lineData: any, i) => {
             svg.append('path')
                 .datum(lineData)
                 .attr('fill', 'none')
-                .attr('stroke', d3.schemeCategory10[i++ % 10])
+                .attr('stroke', d3.schemeCategory10[i % 10])
                 .attr('stroke-width', 1.2)
                 .attr('d', line);
+
+            if (displayPoints) {
+                svg.selectAll(`circle-${i}`)
+                    .data(lineData)
+                    .enter().append("circle")
+                    .attr("cx", (d: any) => x(d.x))
+                    .attr("cy", (d: any) => y(d.y))
+                    .attr("r", 3) // Adjust point radius as needed
+                    .attr("fill", d3.schemeCategory10[i % 10]);
+            }
         });
 
         return {svg, data}
@@ -81,6 +94,7 @@ class AreaChartGenerator extends LineChartGenerator {
         const width = input.width
         const height = input.height
         const data = input.data as any[][];
+        const curved = input.options.curve === "curved";
         const {svg, data: gData} = super.generate(input);
 
         const x = d3.scaleLinear()
@@ -94,7 +108,9 @@ class AreaChartGenerator extends LineChartGenerator {
         const area: any = d3.area<{ x: number, y: number }>()
             .x(d => x(d.x))
             .y0(height) // Bottom edge of the area (base)
-            .y1(d => y(d.y)); // Top edge of the area (actual data)
+            .y1(d => y(d.y))
+            .curve(curved ? d3.curveCatmullRom : d3.curveLinear); // Top edge of the area (actual data)
+
         let i = 0;
         gData.forEach((lineData: any) => {
             svg.append("path")
@@ -107,7 +123,7 @@ class AreaChartGenerator extends LineChartGenerator {
     }
 }
 
-class BarChartGenerator extends BaseChartGenerator  implements ChartGenerator {
+class BarChartGenerator extends BaseChartGenerator implements ChartGenerator {
     generate(input: any) {
         const width = input.width
         const height = input.height
@@ -142,7 +158,7 @@ class BarChartGenerator extends BaseChartGenerator  implements ChartGenerator {
     }
 }
 
-class PieChartGenerator extends BaseChartGenerator  implements ChartGenerator {
+class PieChartGenerator extends BaseChartGenerator implements ChartGenerator {
     generate(input: any) {
         const width = input.width
         const height = input.height
@@ -174,7 +190,7 @@ class PieChartGenerator extends BaseChartGenerator  implements ChartGenerator {
     }
 }
 
-class DonutChartGenerator extends BaseChartGenerator  implements ChartGenerator {
+class DonutChartGenerator extends BaseChartGenerator implements ChartGenerator {
     generate(input: any) {
         const width = input.width
         const height = input.height

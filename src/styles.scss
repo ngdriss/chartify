@@ -1,15 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 @use '@angular/material-experimental' as matx;
 
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+//simple equivalent to tailwindcss base with roboto sans-serif font
+* {
+  @apply m-0 p-0 box-border;
+  font-family: 'Roboto', sans-serif;
+}
 
 $theme: matx.define-theme((
         color: (
                 theme-type: light,
-                primary: matx.$m3-azure-palette
+                primary: matx.$m3-blue-palette
+        ),
+        density: (
+          scale: -5
         )
 ));
 

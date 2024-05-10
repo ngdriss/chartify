@@ -1,4 +1,8 @@
 :host {
-  @apply flex flex-col items-center justify-center;
-  @apply w-full h-1/2;
+  @apply flex flex-col items-center justify-center relative;
+  @apply w-full h-fit bg-gray-100;
+}
+
+.regenerate-btn {
+  @apply absolute bottom-[25px] left-[48%];
 }

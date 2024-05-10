@@ -24,11 +24,11 @@ export class CoordinateGenerator implements DataGenerator<CoordinateGeneratorInp
     generate(input: CoordinateGeneratorInput, currentNode: CurrentNode) {
         // Create scales for the x-axis and y-axis
         const xScale = d3.scaleLinear()
-            .domain([0, input.rangeX])  // Input domain
+            .domain([0, input?.rangeX || 100])  // Input domain
             .range([0, currentNode.width]); // Output range
 
         const yScale = d3.scaleLinear()
-            .domain([0, input.rangeY])  // Input domain
+            .domain([0, input?.rangeY || 100])  // Input domain
             .range([currentNode.height, 0]); // Output range (reversed for SVG)
 
         // Generate trend down data points
@@ -94,13 +94,13 @@ export class SimpleGenerator implements DataGenerator<SimpleGeneratorInput, numb
         let data: number[] = [];
 
         for (let i = 0; i < input.entries; i++) {
-            data.push(Math.random() * input.maxValue)
+            data.push(Math.random() * (input.maxValue || 100))
         }
         return data;
     }
 }
 
-export class PointGeneratorFactory {
+export class DataGeneratorFactory {
     static create(type: string): DataGenerator<any, any> {
         switch (type) {
             case 'line':
@@ -110,6 +110,20 @@ export class PointGeneratorFactory {
             case 'pie':
             case 'donut':
                 return new SimpleGenerator();
+            default:
+                throw new Error('Unknown point generator type')
+        }
+    }
+
+    static getType(type: string) {
+        switch (type) {
+            case 'line':
+            case 'area':
+                return 'coordinate';
+            case 'bar':
+            case 'pie':
+            case 'donut':
+                return 'simple';
             default:
                 throw new Error('Unknown point generator type')
         }

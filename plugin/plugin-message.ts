@@ -48,6 +48,9 @@ export class CreateChartAction extends BaseAction implements ActionHandler {
                     globalFigma.currentPage.appendChild(svgNode);
                     return;
                 }
+                const {x, y} = currentNode;
+                svgNode.x = x;
+                svgNode.y = y;
                 currentNode.parent.appendChild(svgNode);
                 currentNode.remove();
                 globalFigma.currentPage.selection = [svgNode];

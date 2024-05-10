@@ -20,7 +20,16 @@ module.exports = (env, argv) => ({
             // Converts TypeScript code to JavaScript
             {
                 test: /\.ts?$/,
-                use: 'ts-loader',
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env', '@babel/preset-typescript'],
+                            plugins: ['@babel/plugin-proposal-object-rest-spread']
+                        },
+                    },
+                    'ts-loader'
+                ],
                 exclude: /node_modules/
             },
             // Enables including CSS by doing "import './file.css'" in your TypeScript code
@@ -38,7 +47,7 @@ module.exports = (env, argv) => ({
     },
 
     // Webpack tries these extensions for you if you omit the extension like "import './file'"
-    resolve: { extensions: ['.ts', '.js'] },
+    resolve: {extensions: ['.ts', '.js']},
 
     output: {
         filename: '[name].js',

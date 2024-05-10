@@ -1,36 +1,42 @@
 import {Injectable} from "@angular/core";
-import {get, isNil} from "lodash";
+import {get} from "lodash";
 import {BehaviorSubject} from "rxjs";
-import {distinctUntilChanged, filter, map} from "rxjs/operators";
 
 export interface AppState {
-    selectedChartType?: string;
-    chartConfig: any;
+    [key: string]: any;
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppStateService {
-    state: AppState = {
-        selectedChartType: 'line',
-        chartConfig: null
-    };
-    _state$ = new BehaviorSubject<AppState>(this.state);
+    private _chartConfigs$: BehaviorSubject<any> = new BehaviorSubject({});
+    get chartConfigs$() {
+        return this._chartConfigs$.asObservable();
+    }
+    chartConfigs: any = {};
 
-    get state$() {
-        return this._state$.asObservable()
+    selectedChartType?: string = 'line';
+    private _selectedChartType$: BehaviorSubject<string> = new BehaviorSubject('line');
+    get selectedChartType$() {
+        return this._selectedChartType$.asObservable();
     }
 
-    updateState(partialState: any) {
-        this.state = {...this.state, ...partialState};
-        this._state$.next(this.state);
+    getCurrentChartConfig() {
+        return this.chartConfigs[this.selectedChartType];
     }
 
-    select$(path: string) {
-        return this.state$.pipe(
-            map(state => get(state, path)),
-            distinctUntilChanged()
-        )
+    updateChartConfig(config: any) {
+        this.chartConfigs[this.selectedChartType] = config;
+        this._chartConfigs$.next(this.chartConfigs);
+    }
+
+    updateSelectedChartType(chartType: string) {
+        this.selectedChartType = chartType;
+        this._selectedChartType$.next(chartType);
+    }
+
+    geChartConfig(chartType: string) {
+        return get(this.chartConfigs, chartType);
     }
 }

@@ -1,9 +1,10 @@
 import {inject, Injectable} from '@angular/core';
 import {FigmaService} from "../components/figma.service";
-import {PointGeneratorFactory} from "./data-generator";
+import {DataGeneratorFactory} from "./data-generator";
 import {ChartGeneratorFactory} from "./chart-generator";
 import {CurrentFigmaNodeService} from "../components/current-figma-node.service";
 import {CreateChartMessage} from "../../plugin/plugin-message";
+import {DIMENSIONS} from "../../plugin/shared";
 
 @Injectable({
     providedIn: 'root'
@@ -11,11 +12,11 @@ import {CreateChartMessage} from "../../plugin/plugin-message";
 export class ChartService {
     figmaService = inject(FigmaService);
     currentFigmaNodeService = inject(CurrentFigmaNodeService);
-    createChart(options: any, type: string) {
-        console.log('Creating chart', options, type);
-        const pointGenerator = PointGeneratorFactory.create(type);
+    cachedData: any = {};
+
+    createChart(options: any, type: string, force?: boolean) {
         const chartGenerator = ChartGeneratorFactory.create(type);
-        const data = pointGenerator.generate(options, this.currentFigmaNodeService.currentNode);
+        const data = this.getData(options, type, force);
         const input = {
             data,
             width: this.currentFigmaNodeService.currentNode?.width,
@@ -32,18 +33,27 @@ export class ChartService {
         this.figmaService.sendAction(action)
     }
 
-    previewChart(options: any, type: string) {
-        const pointGenerator = PointGeneratorFactory.create(type);
+    private getData(options: any, type: string, force?: boolean) {
+        const pointGenerator = DataGeneratorFactory.create(type);
+        const key = type;
+        if (this.cachedData[key] && !force) {
+            return this.cachedData[key];
+        }
+        this.cachedData[key] = pointGenerator.generate(options, this.currentFigmaNodeService.currentNode);
+        return this.cachedData[key];
+    }
+
+    previewChart(options: any, type: string, force?: boolean) {
         const chartGenerator = ChartGeneratorFactory.create(type);
-        const data = pointGenerator.generate(options, this.currentFigmaNodeService.currentNode);
+        console.log('Previewing chart', options, type, force)
+        const data = this.getData(options, type, force);
         const input = {
             data,
-            width: 500,
-            height: 350,
+            width: DIMENSIONS.width,
+            height: DIMENSIONS.previewHeight,
             options,
             isPreview: true
         }
-        console.log('Input', input);
         chartGenerator.generate(input);
     }
 }

@@ -10,7 +10,7 @@ import {AppStateService} from "../app-state.service";
       MatButtonModule
   ],
   template: `
-    <button mat-flat-button (click)="createChart()">Create</button>
+    <button mat-flat-button class="create-btn" (click)="createChart()">Create</button>
   `,
   styleUrl: './footer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -20,6 +20,6 @@ export class Footer {
   appStateService = inject(AppStateService);
 
   createChart() {
-    this.chartService.createChart(this.appStateService.state.chartConfig, this.appStateService.state.selectedChartType);
+    this.chartService.createChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType);
   }
 }

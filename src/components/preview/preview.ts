@@ -1,29 +1,33 @@
-import {ChangeDetectionStrategy, Component, effect, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ChartService} from 'src/chart/chart.service';
 import {AppStateService} from '../app-state.service';
-import {toSignal} from "@angular/core/rxjs-interop";
+import {DIMENSIONS} from "../../../plugin/shared";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
     selector: 'kj-preview',
     standalone: true,
-    imports: [],
+    imports: [
+        MatButtonModule,
+        MatIconModule
+    ],
     template: `
         <div id="preview"></div>
+        <button (click)="regenerate()" class="regenerate-btn" mat-icon-button color="primary">
+            <mat-icon>restart_alt</mat-icon>
+        </button>
     `,
     styleUrl: './preview.scss',
+    styles: [`#preview {
+      height: ${DIMENSIONS.previewHeight}px;
+    }`],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Preview {
     chartService = inject(ChartService);
     appStateService = inject(AppStateService);
-    state = toSignal(this.appStateService.state$)
-
-    constructor() {
-        effect(() => {
-            const state = this.state()
-            if (state.selectedChartType && state.chartConfig) {
-                this.chartService.previewChart(this.state().chartConfig, this.state().selectedChartType);
-            }
-        })
+    regenerate() {
+        this.chartService.previewChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType, true)
     }
 }
