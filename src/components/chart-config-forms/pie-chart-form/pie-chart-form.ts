@@ -13,7 +13,6 @@ import {Slider} from "../../form-controls/slider/slider";
     template: `
         <div class="input-container" [formGroup]="fg">
             <kj-slider name="entries" label="Entries" min="2" max="30" step="1"/>
-            <kj-slider name="cornerRadius" label="Corner Radius" min="0" max="100" step="1"/>
         </div>
     `,
     styleUrls: ['../base-chart.scss'],
@@ -25,6 +24,7 @@ export class PieChartForm extends BaseChartForm {
         const initialFormData = this.initialFormData
         this.fg = this.fb.group({
             entries: this.fb.nonNullable.control(initialFormData.entries),
+            padAngle: this.fb.nonNullable.control(initialFormData.padAngle),
             cornerRadius: this.fb.nonNullable.control(initialFormData.cornerRadius)
         })
         this.init()
@@ -32,8 +32,7 @@ export class PieChartForm extends BaseChartForm {
 
     get defaultFormData(): any  {
         return {
-            entries: 5,
-            cornerRadius: 10
+            entries: 5
         }
     }
 }

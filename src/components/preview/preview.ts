@@ -19,7 +19,7 @@ import {MatIconModule} from "@angular/material/icon";
         </button>
     `,
     styleUrl: './preview.scss',
-    styles: [`#preview {
+    styles: [`:host {
       height: ${DIMENSIONS.previewHeight}px;
     }`],
     changeDetection: ChangeDetectionStrategy.OnPush

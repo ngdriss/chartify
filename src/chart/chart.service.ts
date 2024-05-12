@@ -23,7 +23,6 @@ export class ChartService {
             height: this.currentFigmaNodeService.currentNode?.height,
             options
         }
-        console.log('Input', input);
         const {svg} = chartGenerator.generate(input);
         const action: CreateChartMessage = {
             type: 'create-chart',
@@ -45,7 +44,6 @@ export class ChartService {
 
     previewChart(options: any, type: string, force?: boolean) {
         const chartGenerator = ChartGeneratorFactory.create(type);
-        console.log('Previewing chart', options, type, force)
         const data = this.getData(options, type, force);
         const input = {
             data,

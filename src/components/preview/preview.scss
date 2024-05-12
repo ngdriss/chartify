@@ -6,3 +6,7 @@
 .regenerate-btn {
   @apply absolute bottom-[25px] left-[48%];
 }
+
+#preview {
+  @apply w-full h-full;
+}

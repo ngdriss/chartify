@@ -73,7 +73,6 @@ export class Body implements OnInit {
                 })
             )
             .subscribe((newValue) => {
-                console.log('value', oldValue, newValue)
                 this.appStateService.updateChartConfig(newValue)
                 const shouldUpdate = this.shouldUpdate(oldValue, newValue)
                 this.chartService.previewChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType, initialized ? shouldUpdate : false)
@@ -87,6 +86,6 @@ export class Body implements OnInit {
     }
 
     private shouldUpdate(oldValue: any, newValue: any) {
-        return ['lines', 'points', 'distribution', 'entries'].some(key => oldValue[key] !== newValue[key])
+        return ['lines', 'points', 'distribution', 'entries', 'rangeX', 'rangeY'].some(key => oldValue[key] !== newValue[key])
     }
 }

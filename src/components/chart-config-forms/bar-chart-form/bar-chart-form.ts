@@ -20,6 +20,7 @@ import {Select} from "../../form-controls/select/select";
             <kj-slider name="entries" label="Entries" min="1" max="20" step="1"/>
             <kj-slider name="maxValue" label="Max Value" min="10" max="1000" step="10"/>
             <kj-slider name="barWidth" label="Bar width" min="1" max="100" step="1"/>
+            <kj-checkbox name="showAxis" label="Show Axis"/>
         </ng-container>
     `,
     styleUrls: ['../base-chart.scss'],
@@ -35,6 +36,7 @@ export class BarChartForm extends BaseChartForm {
             maxValue: this.fb.nonNullable.control(initialFormData?.maxValue),
             barWidth: this.fb.nonNullable.control(initialFormData?.barWidth),
             direction: this.fb.nonNullable.control(initialFormData?.direction),
+            showAxis: this.fb.nonNullable.control(initialFormData?.showAxis),
         })
         this.init()
     }
@@ -44,7 +46,8 @@ export class BarChartForm extends BaseChartForm {
             entries: 5,
             maxValue: 100,
             barWidth: 10,
-            direction: "vertical"
+            direction: "vertical",
+            showAxis: true
         }
     }
 }

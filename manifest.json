@@ -11,6 +11,7 @@
     "figjam"
   ],
   "ui": "dist/ui.html",
+  "permissions": ["payments", "currentuser"],
   "networkAccess": {
     "reasoning": "Development purposes only.",
     "allowedDomains": [

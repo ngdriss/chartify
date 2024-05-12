@@ -64,7 +64,7 @@ export class LineChartForm extends BaseChartForm {
             curve: "simple",
             displayPoints: false,
             dashed: false,
-            showAxis: false,
+            showAxis: true,
             rangeX: 100,
             rangeY: 100
         }
