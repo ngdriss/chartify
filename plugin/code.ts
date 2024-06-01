@@ -1,8 +1,8 @@
-import {ActionHandlerFactory, PluginMessage} from "./plugin-message";
+import {ActionHandlerFactory} from "./plugin-message";
 import {DIMENSIONS} from "./shared";
 
 figma.showUI(__html__, {themeColors: true, width: DIMENSIONS.width, height: DIMENSIONS.height});
-figma.ui.onmessage = (action: PluginMessage) => {
+figma.ui.onmessage = (action) => {
     const actionHandler = ActionHandlerFactory.create(action);
     actionHandler.execute();
 };

@@ -20,16 +20,10 @@ module.exports = (env, argv) => ({
             // Converts TypeScript code to JavaScript
             {
                 test: /\.ts?$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env', '@babel/preset-typescript'],
-                            plugins: ['@babel/plugin-proposal-object-rest-spread']
-                        },
-                    },
-                    'ts-loader'
-                ],
+                loader: "ts-loader",
+                options: {
+                    configFile: 'tsconfig.plugin.json'
+                },
                 exclude: /node_modules/
             },
             // Enables including CSS by doing "import './file.css'" in your TypeScript code

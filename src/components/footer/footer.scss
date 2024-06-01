@@ -1,8 +1,8 @@
 :host {
-  @apply flex items-center;
+  @apply flex items-center gap-2;
   @apply p-3 bg-gray-100;
 }
 
 .create-btn {
-  @apply w-full;
+  @apply flex-auto;
 }

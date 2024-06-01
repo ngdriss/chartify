@@ -5,9 +5,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build && webpack",
+    "build": "ng build && npm run build:webpack",
+    "build:webpack": "webpack --mode=production",
     "watch:ng": "ng build --watch",
-    "watch:webpack": "webpack --watch",
+    "watch:webpack": "webpack --mode=development --watch",
+    "watch:webpack:prd": "webpack --mode=production --watch",
     "watch": "npm run watch:ng && npm run watch:webpack",
     "test": "ng test"
   },
