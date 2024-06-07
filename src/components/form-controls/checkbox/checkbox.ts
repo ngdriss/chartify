@@ -1,18 +1,20 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {MatCheckbox} from "@angular/material/checkbox";
+import {TuiCheckboxModule} from "@taiga-ui/kit";
 
 @Component({
     selector: 'kj-checkbox',
     standalone: true,
     imports: [
-        MatCheckbox,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TuiCheckboxModule
     ],
     template: `
         <ng-container [formGroup]="fg">
             <label>{{label()}}</label>
-            <mat-checkbox formControlName="{{name()}}"></mat-checkbox>
+            <tui-checkbox
+                    formControlName="{{name()}}"
+            ></tui-checkbox>
         </ng-container>
     `,
     styleUrl: './checkbox.scss',

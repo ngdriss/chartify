@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    Inject,
+    inject,
+    OnInit,
+    Type,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {AppStateService} from "../app-state.service";
 import {LineChartForm} from "../chart-config-forms/line-chart-form/line-chart-form";
 import {AreaChartForm} from "../chart-config-forms/area-chart-form/area-chart-form";
@@ -7,46 +16,51 @@ import {PieChartForm} from "../chart-config-forms/pie-chart-form/pie-chart-form"
 import {DonutChartForm} from "../chart-config-forms/donut-chart-form/donut-chart-form";
 import {FormBuilder, FormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSelectModule} from "@angular/material/select";
-import {MatInputModule} from "@angular/material/input";
 import {BaseChartForm} from "../chart-config-forms/base-chart-form";
 import {ChartService} from "../../chart/chart.service";
 import {distinctUntilChanged, mergeMap, startWith} from "rxjs/operators";
+import {TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
+import {TuiSvgService} from "@taiga-ui/core";
+import {tuiIconChevronDown} from "@taiga-ui/icons";
 
 @Component({
     selector: 'kj-body',
     standalone: true,
     providers: [FormBuilder],
     template: `
-        <mat-form-field>
-            <mat-label>Chart Type</mat-label>
-            <select matNativeControl (change)="onChartTypeChange($event)">
-                <option *ngFor="let chartType of chartTypes" [value]="chartType">{{chartType | titlecase}}</option>
-            </select>
-        </mat-form-field>
+        <tui-select tuiTextfieldSize="s" [ngModel]="chartType" (ngModelChange)="onChartTypeChange($event)">
+            Chart Type
+            <input
+                    placeholder="Choose your chart"
+                    tuiTextfield
+            />
+            <tui-data-list-wrapper
+                    *tuiDataList
+                    [items]="chartTypes"
+            ></tui-data-list-wrapper>
+        </tui-select>
         <ng-container #vcr></ng-container>
     `,
     styleUrls: ['./body.scss'],
     imports: [
         TitleCasePipe,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatInputModule,
         FormsModule,
-        NgForOf
+        NgForOf,
+        TuiSelectModule,
+        TuiDataListWrapperModule
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Body implements OnInit {
     chartTypes = ['line', 'area', 'bar', 'pie', 'donut'];
+    chartType = 'line'
     appStateService = inject(AppStateService);
     chartService = inject(ChartService);
     registry: Map<string, Type<BaseChartForm>>;
 
     @ViewChild('vcr', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
 
-    constructor() {
+    constructor(@Inject(TuiSvgService) tuiSvgService: TuiSvgService) {
         this.registry = new Map([
             ['line', LineChartForm],
             ['area', AreaChartForm],
@@ -54,6 +68,7 @@ export class Body implements OnInit {
             ['pie', PieChartForm],
             ['donut', DonutChartForm]
         ]);
+        tuiSvgService.define({tuiIconChevronDown: tuiIconChevronDown});
     }
 
     ngOnInit() {
@@ -82,7 +97,7 @@ export class Body implements OnInit {
     }
 
     onChartTypeChange(event: any) {
-        this.appStateService.updateSelectedChartType(event.target.value);
+        this.appStateService.updateSelectedChartType(event);
     }
 
     private shouldUpdate(oldValue: any, newValue: any) {

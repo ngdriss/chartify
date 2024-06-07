@@ -24,17 +24,22 @@ import {NgIf} from "@angular/common";
             </div>
             <div class="input-container">
                 <kj-slider name="lines" label="Lines" min="1" max="20" step="1"/>
-                <kj-slider name="points" label="Number of points" min="1" max="30" step="1"/>
+                <kj-slider name="points" label="Points" min="1" max="30" step="1"/>
+            </div>
+            <div class="input-container">
                 <kj-checkbox name="displayPoints" label="Display Points"/>
                 <kj-checkbox name="showAxis" label="Show Axis"/>
-                <ng-container *ngIf="fg.get('showAxis').value">
+            </div>
+            <div *ngIf="fg.get('showAxis').value" class="input-inline">
+                <div>
                     <kj-slider name="rangeY" label="Max Y" min="10" max="1000" step="10"/>
+                </div>
+                <div>
                     <kj-slider name="rangeX" label="Max X" max="1000" step="10"/>
-                </ng-container>
+                </div>
             </div>
         </ng-container>
     `,
-    styleUrls: ['../base-chart.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AreaChartForm extends LineChartForm {

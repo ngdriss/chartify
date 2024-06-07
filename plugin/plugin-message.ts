@@ -1,4 +1,6 @@
-import {globalFigma} from "./shared";
+/// <reference path="../node_modules/@figma/plugin-typings/index.d.ts" />
+export const globalFigma = figma;
+
 
 export type PluginMessage<Input extends any = any> = { type: string; } & Input;
 

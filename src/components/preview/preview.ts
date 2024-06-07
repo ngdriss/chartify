@@ -2,20 +2,25 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ChartService} from 'src/chart/chart.service';
 import {AppStateService} from '../app-state.service';
 import {DIMENSIONS} from "../../../plugin/shared";
-import {MatButtonModule} from "@angular/material/button";
-import {MatIconModule} from "@angular/material/icon";
+import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
 
 @Component({
     selector: 'kj-preview',
     standalone: true,
     imports: [
-        MatButtonModule,
-        MatIconModule
+        TuiSvgModule,
+        TuiButtonModule
     ],
     template: `
         <div id="preview"></div>
-        <button (click)="regenerate()" class="regenerate-btn" mat-icon-button color="primary">
-            <mat-icon>restart_alt</mat-icon>
+        <button
+                tuiIconButton
+                icon="tuiIconRefreshCcw"
+                type="button"
+                appearance="flat"
+                class="regenerate-btn"
+                (click)="regenerate()"
+        >
         </button>
     `,
     styleUrl: './preview.scss',

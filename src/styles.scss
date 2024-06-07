@@ -1,6 +1,3 @@
-@use '@angular/material' as mat;
-@use '@angular/material-experimental' as matx;
-
 @tailwind components;
 @tailwind utilities;
 
@@ -10,19 +7,12 @@
   font-family: 'Roboto', sans-serif;
 }
 
-$theme: matx.define-theme((
-        color: (
-                theme-type: light,
-                primary: matx.$m3-blue-palette
-        ),
-        density: (
-          scale: -5
-        )
-));
-
-@include mat.core();
-@include matx.color-variants-back-compat($theme);
-
-:root {
-  @include mat.all-component-themes($theme);
+.input-container {
+  @apply grid grid-cols-[1.5fr_4fr] grid-flow-row gap-4 items-center;
+}
+.input-inline {
+  @apply grid grid-cols-2 gap-4
+}
+.options-container {
+  @apply flex gap-4;
 }

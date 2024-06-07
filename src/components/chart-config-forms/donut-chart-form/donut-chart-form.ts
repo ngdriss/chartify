@@ -18,7 +18,6 @@ import {Slider} from "../../form-controls/slider/slider";
             <kj-slider name="cornerRadius" label="Corner Radius" min="0" max="100" step="1"/>
         </div>
     `,
-    styleUrls: ['../base-chart.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DonutChartForm extends BaseChartForm {

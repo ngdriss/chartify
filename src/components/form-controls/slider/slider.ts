@@ -1,22 +1,24 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
-import {MatSlider, MatSliderThumb} from "@angular/material/slider";
 import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {TuiSliderModule} from "@taiga-ui/kit";
 
 @Component({
     selector: 'kj-slider',
     standalone: true,
     imports: [
-        MatSlider,
-        MatSliderThumb,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TuiSliderModule
     ],
     template: `
         <ng-container [formGroup]="fg">
             <label>{{label()}}</label>
-            <mat-slider min="{{min()}}" max="{{max()}}" step="{{step()}}" showTickMarks discrete
-                        [displayWith]="formatLabel">
-                <input matSliderThumb formControlName="{{name()}}">
-            </mat-slider>
+            <input
+                    size="m"
+                    tuiSlider
+                    type="range"
+                    min="{{min()}}" max="{{max()}}" step="{{step()}}"
+                    formControlName="{{name()}}"
+            />
         </ng-container>
     `,
     styleUrl: './slider.scss',

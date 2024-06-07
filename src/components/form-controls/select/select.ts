@@ -1,29 +1,31 @@
 import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
 import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
-import {MatSelectModule} from "@angular/material/select";
+import {TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
 
 @Component({
     selector: 'kj-select',
     standalone: true,
     imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
         ReactiveFormsModule,
         NgForOf,
-        TitleCasePipe
+        TitleCasePipe,
+        TuiSelectModule,
+        TuiDataListWrapperModule
     ],
     template: `
         <ng-container [formGroup]="fg">
-            <mat-form-field>
-                <mat-label>{{label()}}</mat-label>
-                <select matNativeControl formControlName="{{name()}}">
-                    <option *ngFor="let option of options()" value="{{option}}">{{option | titlecase}}</option>
-                </select>
-            </mat-form-field>
+            <tui-select formControlName="{{name()}}" class="w-full">
+                {{label()}}
+                <input
+                        placeholder="Choose your hero"
+                        tuiTextfield
+                />
+                <tui-data-list-wrapper
+                        *tuiDataList
+                        [items]="options()"
+                ></tui-data-list-wrapper>
+            </tui-select>
         </ng-container>
     `,
     styleUrl: './select.scss',

@@ -15,7 +15,6 @@ import {Slider} from "../../form-controls/slider/slider";
             <kj-slider name="entries" label="Entries" min="2" max="30" step="1"/>
         </div>
     `,
-    styleUrls: ['../base-chart.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PieChartForm extends BaseChartForm {

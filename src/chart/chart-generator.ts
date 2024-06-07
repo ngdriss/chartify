@@ -55,7 +55,7 @@ abstract class BaseChartGenerator implements ChartGenerator {
                 .attr("transform", "translate(" + (MARGIN.left) + "," + (MARGIN.top) + ")")
             svg = g;
         }
-        return {svg, width, height}
+        return {svg, width, height, fullHeight, fullWidth}
     }
 
     generatePath(svg: any, x: any, y: any, translateX: number) {
@@ -244,11 +244,11 @@ class PieChartGenerator extends BaseChartGenerator implements ChartGenerator {
         const cornerRadius = input.options?.cornerRadius || 0;
         const padAngle = 0;
         input.ignoreTranslate = true;
-        const {svg, height, width} = this.createSvg(input)
+        const {svg, height, width, fullHeight, fullWidth} = this.createSvg(input)
         const radius = Math.min(width, height) / 2;
         const g = svg
             .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            .attr("transform", "translate(" + fullWidth / 2 + "," + fullHeight / 2 + ")");
 
         const pie = d3.pie()
             .padAngle(padAngle);
@@ -276,11 +276,11 @@ class DonutChartGenerator extends BaseChartGenerator implements ChartGenerator {
         const cornerRadius = input.options?.cornerRadius;
         const padAngle = input.options?.padAngle / 100;
         input.ignoreTranslate = true;
-        const {svg, width, height} = this.createSvg(input)
+        const {svg, width, height, fullHeight, fullWidth} = this.createSvg(input)
         const radius = Math.min(width, height) / 2;
         const innerRadius = input.options?.innerRadius || radius * 0.5;
         const g = svg.append("g")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            .attr("transform", "translate(" + fullWidth / 2 + "," + fullHeight / 2 + ")");
 
         const pie = d3.pie()
             .padAngle(padAngle);
