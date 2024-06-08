@@ -5,6 +5,7 @@ import {ChartGeneratorFactory} from "./chart-generator";
 import {CurrentFigmaNodeService} from "../components/current-figma-node.service";
 import {CreateChartMessage} from "../../plugin/plugin-message";
 import {DIMENSIONS} from "../../plugin/shared";
+import {ColorsService} from "../components/colors.service";
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,7 @@ import {DIMENSIONS} from "../../plugin/shared";
 export class ChartService {
     figmaService = inject(FigmaService);
     currentFigmaNodeService = inject(CurrentFigmaNodeService);
+    colorsService = inject(ColorsService);
     cachedData: any = {};
 
     createChart(options: any, type: string, force?: boolean) {
@@ -19,15 +21,19 @@ export class ChartService {
         const data = this.getData(options, type, force);
         const input = {
             data,
-            width: this.currentFigmaNodeService.currentNode?.width,
-            height: this.currentFigmaNodeService.currentNode?.height,
-            options
+            type,
+            width: this.currentFigmaNodeService?.width,
+            height: this.currentFigmaNodeService?.height,
+            options,
+            config: {
+                colors: this.colorsService.colors()
+            }
         }
         const {svg} = chartGenerator.generate(input);
         const action: CreateChartMessage = {
             type: 'create-chart',
             svg: svg.node().outerHTML,
-            nodeId: this.currentFigmaNodeService.currentNode?.id
+            nodeId: this.currentFigmaNodeService?.id
         }
         this.figmaService.sendAction(action)
     }
@@ -38,7 +44,7 @@ export class ChartService {
         if (this.cachedData[key] && !force) {
             return this.cachedData[key];
         }
-        this.cachedData[key] = pointGenerator.generate(options, this.currentFigmaNodeService.currentNode);
+        this.cachedData[key] = pointGenerator.generate(options, this.currentFigmaNodeService.dimensions);
         return this.cachedData[key];
     }
 
@@ -47,10 +53,14 @@ export class ChartService {
         const data = this.getData(options, type, force);
         const input = {
             data,
+            type,
             width: DIMENSIONS.width,
             height: DIMENSIONS.previewHeight,
             options,
-            isPreview: true
+            isPreview: true,
+            config: {
+                colors: this.colorsService.colors()
+            }
         }
         chartGenerator.generate(input);
     }

@@ -3,11 +3,12 @@ import * as d3 from 'd3';
 
 export type Point = { x: number, y: number, chartX?: number, chartY?: number };
 export type Points = Point[];
+export type Dimensions = { width: number, height: number };
 
 export interface DataGenerator<Input, Data> {
     type: string;
 
-    generate(input: Input, currentNode: CurrentNode): Data;
+    generate(input: Input, dimensions: Dimensions): Data;
 }
 
 export type CoordinateGeneratorInput = {
@@ -21,15 +22,15 @@ export type CoordinateGeneratorInput = {
 export class CoordinateGenerator implements DataGenerator<CoordinateGeneratorInput, Points[]> {
     type = 'coordinate';
 
-    generate(input: CoordinateGeneratorInput, currentNode: CurrentNode) {
+    generate(input: CoordinateGeneratorInput, dimensions: Dimensions) {
         // Create scales for the x-axis and y-axis
         const xScale = d3.scaleLinear()
             .domain([0, input?.rangeX || 100])  // Input domain
-            .range([0, currentNode.width]); // Output range
+            .range([0, dimensions.width]); // Output range
 
         const yScale = d3.scaleLinear()
             .domain([0, input?.rangeY || 100])  // Input domain
-            .range([currentNode.height, 0]); // Output range (reversed for SVG)
+            .range([dimensions.height, 0]); // Output range (reversed for SVG)
 
         // Generate trend down data points
         const distribution = input.distribution;

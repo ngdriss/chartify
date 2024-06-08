@@ -22,7 +22,7 @@ import {NgIf} from "@angular/common";
                 <kj-select name="distribution" label="Distribution" [options]="['random', 'trend-up', 'trend-down']"/>
                 <kj-select name="curve" label="Path" [options]="['simple', 'curved']"/>
             </div>
-            <div class="input-inline">
+            <div class="input-container">
                 <kj-slider name="lines" label="Lines" min="1" max="20" step="1"/>
                 <kj-slider name="points" label="Points" min="1" max="30" step="1"/>
             </div>
@@ -66,7 +66,7 @@ export class LineChartForm extends BaseChartForm {
             lines: 3,
             points: 5,
             distribution: "random",
-            curve: "simple",
+            curve: "curved",
             displayPoints: false,
             dashed: false,
             showAxis: true,

@@ -3,14 +3,6 @@
   @apply w-full h-fit bg-gray-100;
 }
 
-.regenerate-btn {
-  @apply absolute bottom-0;
-  & .loader {
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
 #preview {
   @apply w-full h-full;
 }

@@ -1,7 +1,6 @@
 /// <reference path="../node_modules/@figma/plugin-typings/index.d.ts" />
 export const globalFigma = figma;
 
-
 export type PluginMessage<Input extends any = any> = { type: string; } & Input;
 
 export type CreateChartMessage =  PluginMessage<{
@@ -17,11 +16,16 @@ export type SelectedNodeMetaMessage =  PluginMessage<{
     id: string;
 }>
 
+
 export class ActionHandlerFactory {
     static create(action: PluginMessage) {
         switch (action.type) {
             case 'create-chart':
                 return new CreateChartAction(action)
+            case 'load-colors':
+                return new LoadColorAction(action)
+            case 'set-colors':
+                return new SetColorAction(action)
             default:
                 throw new Error('Unknown action type')
         }
@@ -60,4 +64,17 @@ export class CreateChartAction extends BaseAction implements ActionHandler {
     }
 }
 
+export class LoadColorAction extends BaseAction implements ActionHandler {
+    execute() {
+        figma.clientStorage.getAsync('colors')
+            .then((colors) => figma.ui.postMessage({type: 'load-colors', colors}))
+    }
+}
+
+class SetColorAction extends BaseAction implements ActionHandler {
+    async execute() {
+        await figma.clientStorage.setAsync('colors', this.action.colors)
+    }
+
+}
 

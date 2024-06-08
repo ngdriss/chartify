@@ -1,6 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {ChartService} from 'src/chart/chart.service';
-import {AppStateService} from '../app-state.service';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {DIMENSIONS} from "../../../plugin/shared";
 import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
 
@@ -13,15 +11,6 @@ import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
     ],
     template: `
         <div id="preview"></div>
-        <button
-                tuiIconButton
-                icon="tuiIconRefreshCcw"
-                type="button"
-                appearance="flat"
-                class="regenerate-btn"
-                (click)="regenerate()"
-        >
-        </button>
     `,
     styleUrl: './preview.scss',
     styles: [`:host {
@@ -29,10 +18,4 @@ import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
     }`],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Preview {
-    chartService = inject(ChartService);
-    appStateService = inject(AppStateService);
-    regenerate() {
-        this.chartService.previewChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType, true)
-    }
-}
+export class Preview {}

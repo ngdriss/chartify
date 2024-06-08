@@ -38,7 +38,7 @@ export class DonutChartForm extends BaseChartForm {
         return {
             entries: 5,
             padAngle: 0,
-            innerRadius: 0,
+            innerRadius: 75,
             cornerRadius: 0
         }
     }
