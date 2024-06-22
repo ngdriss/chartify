@@ -3,9 +3,8 @@ import {
     Component, effect,
     Inject,
     inject, Injector,
-    OnInit, runInInjectionContext, signal,
+    signal,
     Type, viewChild,
-    ViewChild,
     ViewContainerRef
 } from '@angular/core';
 import {ConfigService} from "../config.service";
@@ -17,13 +16,11 @@ import {DonutChartForm} from "../chart-config-forms/donut-chart-form/donut-chart
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
 import {BaseChartForm} from "../chart-config-forms/base-chart-form";
-import {ChartService} from "../../chart/chart.service";
 import {TuiAccordionModule, TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
 import {TuiGroupModule, TuiSvgService, TuiTextfieldControllerModule} from "@taiga-ui/core";
 import {tuiIconChevronDown} from "@taiga-ui/icons";
 import {Preset} from "./preset/preset";
 import {TuiInputColorModule} from "@tinkoff/tui-editor";
-import {Subject} from "rxjs";
 import {getDefaultConfig} from "../../models/chart-types";
 import {DataService} from "../data.service";
 
@@ -92,7 +89,6 @@ import {DataService} from "../data.service";
 export class ConfigPanel {
     chartTypes = ['line', 'area', 'bar', 'pie', 'donut'];
     chartType = signal<string>(null)
-    injector = inject(Injector);
     configService = inject(ConfigService);
     dataService = inject(DataService);
     registry: Map<string, Type<BaseChartForm>>
@@ -130,20 +126,7 @@ export class ConfigPanel {
                 container.clear();
                 const ref = container.createComponent(instanceType)
                 ref.changeDetectorRef.markForCheck();
-                //teardown.destroy()
             }
-            /*
-            runInInjectionContext(this.injector, () => {
-                const teardown = effect(() => {
-                    const container = this.container()
-                    if (container) {
-                        const ref = container.createComponent(instanceType)
-                        ref.changeDetectorRef.markForCheck();
-                        teardown.destroy()
-                    }
-                })
-            })
-             */
         })
     }
 
@@ -151,10 +134,6 @@ export class ConfigPanel {
         const defaultConfig = getDefaultConfig(type)
         this.configService.updateConfig('chartConfig', defaultConfig);
         this.configService.updateConfig('data', this.dataService.getData(defaultConfig));
-    }
-
-    private shouldUpdate(oldValue: any, newValue: any) {
-        return ['lines', 'points', 'distribution', 'entries', 'rangeX', 'rangeY'].some(key => oldValue[key] !== newValue[key])
     }
 
     whenOpenChange(isOpen: boolean) {

@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {ColorsService} from "../../colors.service";
 import {TuiTagModule} from "@taiga-ui/kit";
 import {NgForOf} from "@angular/common";
-import {TuiHostedDropdownComponent, TuiHostedDropdownModule, TuiButtonModule as ButtonModule} from "@taiga-ui/core";
+import {TuiHostedDropdownModule, TuiButtonModule as ButtonModule} from "@taiga-ui/core";
 import {
     TuiChipModule,
     TuiHeaderModule,
@@ -114,7 +114,6 @@ export class ColorSettings {
         this.colorService.removeColor(color)
     }
     onAdd(color: string) {
-        console.log('adding')
         this.currentColor = '#EF1233';
         this.colorService.addColor(new Color(color).hex())
     }

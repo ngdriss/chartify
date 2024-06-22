@@ -18,6 +18,7 @@ export class ConfigService {
     updateConfig(path: string, value: any) {
         const newConfig = set(this._config() || {}, path, value)
         this._config.set({...newConfig})
+        return this._config()
     }
 
 }

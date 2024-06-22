@@ -2,10 +2,12 @@ import {Directive, inject} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {ConfigService} from "../config.service";
 import {getTypeMetadata} from "../../models/type-attributes";
+import {DataService} from "../data.service";
 
 @Directive()
 export abstract class BaseChartForm {
     configService = inject(ConfigService);
+    dataService = inject(DataService);
     fb = inject(FormBuilder);
     fg: FormGroup;
 
@@ -22,13 +24,10 @@ export abstract class BaseChartForm {
 
         this.fg
             .valueChanges
-            .subscribe((values) => this.configService.setConfig({
-                ...config,
-                chartConfig: {
-                    type: config.chartConfig.type,
-                    ...values
-                }
-            }))
+            .subscribe((chartConfig) => {
+                const newConfig = this.configService.updateConfig('chartConfig', chartConfig)
+                this.configService.updateConfig('data', this.dataService.getData(newConfig.chartConfig, false, true))
+            })
     }
 
 }
