@@ -1,5 +1,5 @@
 :host {
-  @apply flex items-center gap-2 border-t-[--tui-base-04] border-t;
+  @apply h-fit flex items-center gap-2 border-t-[--tui-base-04] border-t;
   border-top-style: solid;
   @apply p-3;
 }

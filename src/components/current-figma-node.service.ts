@@ -2,7 +2,7 @@ import {inject, Injectable, signal} from "@angular/core";
 import {FigmaService} from "./figma.service";
 import {SelectedNodeMetaMessage} from "../../plugin/plugin-message";
 import {CurrentNode} from "../../plugin/code";
-import {Dimensions} from "../chart/data-generator";
+import {Dimensions} from "../models/data";
 
 @Injectable({
     providedIn: 'root'

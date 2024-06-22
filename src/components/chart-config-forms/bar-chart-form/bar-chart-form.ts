@@ -4,6 +4,7 @@ import {BaseChartForm} from "../base-chart-form";
 import {Slider} from "../../form-controls/slider/slider";
 import {Checkbox} from "../../form-controls/checkbox/checkbox";
 import {Select} from "../../form-controls/select/select";
+import {BarChartConfig} from "../../../models/chart-types";
 
 @Component({
     selector: 'kj-bar-chart-form',
@@ -32,25 +33,6 @@ import {Select} from "../../form-controls/select/select";
 export class BarChartForm extends BaseChartForm {
 
     constructor() {
-        super();
-        const initialFormData = this.initialFormData;
-        this.fg = this.fb.group({
-            entries: this.fb.nonNullable.control(initialFormData?.entries),
-            maxValue: this.fb.nonNullable.control(initialFormData?.maxValue),
-            barWidth: this.fb.nonNullable.control(initialFormData?.barWidth),
-            direction: this.fb.nonNullable.control(initialFormData?.direction),
-            showAxis: this.fb.nonNullable.control(initialFormData?.showAxis),
-        })
-        this.init()
-    }
-
-    get defaultFormData(): any  {
-        return {
-            entries: 5,
-            maxValue: 100,
-            barWidth: 10,
-            direction: "vertical",
-            showAxis: true
-        }
+        super(BarChartConfig);
     }
 }

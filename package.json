@@ -40,6 +40,7 @@
     "@taiga-ui/styles": "^3.84.0",
     "@tinkoff/ng-dompurify": "4.0.0",
     "@tinkoff/ng-polymorpheus": "^4.3.0",
+    "@taiga-ui/polymorpheus": "^4.6.3",
     "@tinkoff/tui-editor": "^1.35.0",
     "color": "4.2.3",
     "d3": "^7.9.0",

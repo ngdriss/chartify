@@ -1,10 +1,11 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, Optional} from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
 import {BaseChartForm} from "../base-chart-form";
 import {Checkbox} from "../../form-controls/checkbox/checkbox";
 import {Select} from "../../form-controls/select/select";
 import {Slider} from "../../form-controls/slider/slider";
 import {NgIf} from "@angular/common";
+import {LineChartConfig} from "../../../models/chart-types";
 
 @Component({
     selector: 'kj-line-chart-form',
@@ -45,33 +46,6 @@ import {NgIf} from "@angular/common";
 })
 export class LineChartForm extends BaseChartForm {
     constructor() {
-        super();
-        const initialFormData = this.initialFormData
-        this.fg = this.fb.group({
-            lines: this.fb.nonNullable.control(initialFormData?.lines),
-            points: this.fb.nonNullable.control(initialFormData?.points),
-            distribution: this.fb.nonNullable.control(initialFormData?.distribution),
-            curve: this.fb.nonNullable.control(initialFormData?.curve),
-            displayPoints: this.fb.nonNullable.control(initialFormData?.displayPoints),
-            dashed: this.fb.nonNullable.control(initialFormData?.dashed),
-            showAxis: this.fb.nonNullable.control(initialFormData?.showAxis),
-            rangeX: this.fb.nonNullable.control(initialFormData?.rangeX),
-            rangeY: this.fb.nonNullable.control(initialFormData?.rangeY),
-        })
-        this.init()
-    }
-
-    get defaultFormData(): any {
-        return {
-            lines: 3,
-            points: 5,
-            distribution: "random",
-            curve: "curved",
-            displayPoints: false,
-            dashed: false,
-            showAxis: true,
-            rangeX: 100,
-            rangeY: 100
-        }
+        super(LineChartConfig);
     }
 }

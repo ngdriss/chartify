@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   standalone: true,
   template: `
       <ng-content select="kj-header"></ng-content>
-      <div class="flex-1 overflow-none flex flex-nowrap">
+      <div class="flex-auto overflow-none flex flex-nowrap">
         <ng-content select="kj-preview"></ng-content>
         <ng-content select="kj-config-panel"></ng-content>
       </div>

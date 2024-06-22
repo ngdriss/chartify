@@ -1,14 +1,14 @@
 import {
     ChangeDetectionStrategy,
-    Component,
+    Component, effect,
     Inject,
-    inject,
-    OnInit,
-    Type,
+    inject, Injector,
+    OnInit, runInInjectionContext, signal,
+    Type, viewChild,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import {AppStateService} from "../app-state.service";
+import {ConfigService} from "../config.service";
 import {LineChartForm} from "../chart-config-forms/line-chart-form/line-chart-form";
 import {AreaChartForm} from "../chart-config-forms/area-chart-form/area-chart-form";
 import {BarChartForm} from "../chart-config-forms/bar-chart-form/bar-chart-form";
@@ -18,14 +18,14 @@ import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
 import {BaseChartForm} from "../chart-config-forms/base-chart-form";
 import {ChartService} from "../../chart/chart.service";
-import {distinctUntilChanged, mergeMap, startWith} from "rxjs/operators";
 import {TuiAccordionModule, TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
 import {TuiGroupModule, TuiSvgService, TuiTextfieldControllerModule} from "@taiga-ui/core";
 import {tuiIconChevronDown} from "@taiga-ui/icons";
-import {CurrentFigmaNodeService} from "../current-figma-node.service";
 import {Preset} from "./preset/preset";
-import {UserChartConfig} from "../../chart/chart-generator";
 import {TuiInputColorModule} from "@tinkoff/tui-editor";
+import {Subject} from "rxjs";
+import {getDefaultConfig} from "../../models/chart-types";
+import {DataService} from "../data.service";
 
 @Component({
     selector: 'kj-config-panel',
@@ -34,7 +34,7 @@ import {TuiInputColorModule} from "@tinkoff/tui-editor";
     template: `
         <kj-preset class="px-2"/>
         <div class="px-2">
-            <tui-select tuiTextfieldSize="m" [ngModel]="chartType" (ngModelChange)="onChartTypeChange($event)">
+            <tui-select tuiTextfieldSize="m" [ngModel]="chartType()" (ngModelChange)="onChartTypeChange($event)">
                 Chart Type
                 <input
                         placeholder="Choose your chart"
@@ -48,25 +48,30 @@ import {TuiInputColorModule} from "@tinkoff/tui-editor";
         </div>
         <tui-accordion
                 [rounded]="false"
-                [formGroup]="userChartConfigForm"
         >
             <tui-accordion-item
                     borders="top-bottom"
                     size="s"
-                    formGroupName="display"
             >
                 Display
                 <ng-template tuiAccordionItemContent>
-                    <h3>Labels</h3>
-                    <div tuiGroup>
-                        <tui-input-color>
-                            Background color
-                        </tui-input-color>
-                    </div>
+                    <tui-input-color tuiTextfieldSize="m">
+                        Labels color
+                    </tui-input-color>
+                </ng-template>
+            </tui-accordion-item>
+            <tui-accordion-item
+                    borders="top-bottom"
+                    size="s"
+                    [disabled]="!chartType()"
+                    (openChange)="whenOpenChange($event)"
+            >
+                Config
+                <ng-template tuiAccordionItemContent>
+                    <ng-container #vcr></ng-container>
                 </ng-template>
             </tui-accordion-item>
         </tui-accordion>
-        <ng-container #vcr></ng-container>
     `,
     styleUrls: ['./config-panel.scss'],
     imports: [
@@ -84,27 +89,16 @@ import {TuiInputColorModule} from "@tinkoff/tui-editor";
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ConfigPanel implements OnInit {
+export class ConfigPanel {
     chartTypes = ['line', 'area', 'bar', 'pie', 'donut'];
-    chartType = 'line'
-    appStateService = inject(AppStateService);
-    chartService = inject(ChartService);
-    formBuilder = inject(FormBuilder);
-    registry: Map<string, Type<BaseChartForm>>;
-    userChartConfigForm = this.formBuilder.group({
-        display: this.formBuilder.group({
-            label: this.formBuilder.group({
-                color: this.formBuilder.control(['']),
-                fontFamily: this.formBuilder.control(['']),
-                fontSize: this.formBuilder.control(['']),
-            }),
-            showGrid: this.formBuilder.control([false]),
-            backgroundColor: this.formBuilder.control(['transparent']),
-        })
-    })
+    chartType = signal<string>(null)
+    injector = inject(Injector);
+    configService = inject(ConfigService);
+    dataService = inject(DataService);
+    registry: Map<string, Type<BaseChartForm>>
 
-    @ViewChild('vcr', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
-
+    container = viewChild('vcr', {read: ViewContainerRef})
+    isConfigOpen = signal<boolean>(false)
     constructor(@Inject(TuiSvgService) tuiSvgService: TuiSvgService) {
         this.registry = new Map([
             ['line', LineChartForm],
@@ -114,38 +108,56 @@ export class ConfigPanel implements OnInit {
             ['donut', DonutChartForm]
         ]);
         tuiSvgService.define({tuiIconChevronDown: tuiIconChevronDown});
-    }
+        effect(() => {
+            const chartConfig = this.configService.config()?.chartConfig
+            this.chartType.set(chartConfig?.type)
+        }, {allowSignalWrites: true})
 
-    ngOnInit() {
-        let initialized = false,
-            oldValue = null;
-        this.appStateService.selectedChartType$
-            .pipe(
-                distinctUntilChanged(),
-                mergeMap((chartType) => {
-                    initialized = false;
-                    this.container.clear();
-                    const ref = this.container?.createComponent(this.registry.get(chartType)!)
-                    ref.changeDetectorRef.markForCheck();
-                    oldValue = ref.instance.initialFormData;
-                    return ref.instance.fg.valueChanges
-                        .pipe(startWith(ref.instance.initialFormData))
+        effect(() => {
+            const chartType = this.chartType();
+            const isConfigOpen = this.isConfigOpen();
+            const container = this.container();
+            if (!isConfigOpen || !chartType) {
+                container?.clear();
+                return;
+            }
+            const instanceType = this.registry.get(chartType);
+            if (!instanceType) {
+                console.warn(`chart instance type not found`)
+                return;
+            }
+            if (container) {
+                container.clear();
+                const ref = container.createComponent(instanceType)
+                ref.changeDetectorRef.markForCheck();
+                //teardown.destroy()
+            }
+            /*
+            runInInjectionContext(this.injector, () => {
+                const teardown = effect(() => {
+                    const container = this.container()
+                    if (container) {
+                        const ref = container.createComponent(instanceType)
+                        ref.changeDetectorRef.markForCheck();
+                        teardown.destroy()
+                    }
                 })
-            )
-            .subscribe((newValue) => {
-                this.appStateService.updateChartConfig(newValue)
-                const shouldUpdate = this.shouldUpdate(oldValue, newValue)
-                this.chartService.previewChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType, initialized ? shouldUpdate : false)
-                initialized = true
-                oldValue = newValue
             })
+             */
+        })
     }
 
-    onChartTypeChange(event: any) {
-        this.appStateService.updateSelectedChartType(event);
+    onChartTypeChange(type: any) {
+        const defaultConfig = getDefaultConfig(type)
+        this.configService.updateConfig('chartConfig', defaultConfig);
+        this.configService.updateConfig('data', this.dataService.getData(defaultConfig));
     }
 
     private shouldUpdate(oldValue: any, newValue: any) {
         return ['lines', 'points', 'distribution', 'entries', 'rangeX', 'rangeY'].some(key => oldValue[key] !== newValue[key])
+    }
+
+    whenOpenChange(isOpen: boolean) {
+        this.isConfigOpen.set(isOpen)
     }
 }

@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {DIMENSIONS} from "../../../plugin/shared";
+import {ChangeDetectionStrategy, Component, effect, inject} from '@angular/core';
 import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
+import {ConfigService} from "../config.service";
+import {ChartService} from "../../chart/chart.service";
 
 @Component({
     selector: 'kj-preview',
@@ -15,4 +16,17 @@ import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
     styleUrl: './preview.scss',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Preview {}
+export class Preview {
+    chartService = inject(ChartService)
+    configService = inject(ConfigService)
+    config = this.configService.config
+
+    constructor() {
+        effect(() => {
+            const currentConfig = this.config()
+            if (currentConfig) {
+                this.chartService.previewChart(currentConfig)
+            }
+        })
+    }
+}

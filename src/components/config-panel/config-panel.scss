@@ -1,5 +1,5 @@
 :host {
-  @apply h-full flex flex-col gap-4 border-l-[--tui-base-04] border-l py-4;
+  @apply h-full flex-auto flex flex-col gap-4 border-l-[--tui-base-04] border-l py-4;
   border-left-style: solid;
 }
 

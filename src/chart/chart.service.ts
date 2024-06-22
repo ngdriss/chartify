@@ -5,6 +5,7 @@ import {ChartGeneratorFactory} from "./chart-generator";
 import {CurrentFigmaNodeService} from "../components/current-figma-node.service";
 import {CreateChartMessage} from "../../plugin/plugin-message";
 import {ColorsService} from "../components/colors.service";
+import { Config } from 'src/models/config';
 
 @Injectable({
     providedIn: 'root'
@@ -13,17 +14,17 @@ export class ChartService {
     figmaService = inject(FigmaService);
     currentFigmaNodeService = inject(CurrentFigmaNodeService);
     colorsService = inject(ColorsService);
-    cachedData: any = {};
 
-    createChart(options: any, type: string, force?: boolean) {
+    createChart(config: Config) {
+        const type = config?.chartConfig?.type
         const chartGenerator = ChartGeneratorFactory.create(type);
-        const data = this.getData(options, type, force);
+        const data = config.data;
         const input = {
             data,
             type,
             width: this.currentFigmaNodeService?.width,
             height: this.currentFigmaNodeService?.height,
-            options,
+            options: config.chartConfig,
             config: {
                 colors: this.colorsService.colors()
             }
@@ -38,25 +39,16 @@ export class ChartService {
         this.figmaService.sendAction(action)
     }
 
-    private getData(options: any, type: string, force?: boolean) {
-        const pointGenerator = DataGeneratorFactory.create(type);
-        const key = type;
-        if (this.cachedData[key] && !force) {
-            return this.cachedData[key];
-        }
-        this.cachedData[key] = pointGenerator.generate(options, this.currentFigmaNodeService.dimensions);
-        return this.cachedData[key];
-    }
-
-    previewChart(options: any, type: string, force?: boolean) {
+    previewChart(config: Config) {
+        const type = config?.chartConfig?.type
         const chartGenerator = ChartGeneratorFactory.create(type);
-        const data = this.getData(options, type, force);
+        const data = config.data;
         const input = {
             data,
             type,
             width: this.currentFigmaNodeService?.width,
             height: this.currentFigmaNodeService?.height,
-            options,
+            options: config.chartConfig,
             isPreview: true,
             config: {
                 colors: this.colorsService.colors()

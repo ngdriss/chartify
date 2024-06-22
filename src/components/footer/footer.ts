@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {TuiButtonModule, TuiDialogModule, TuiDialogService, TuiHintModule} from "@taiga-ui/core";
 import {ChartService} from "../../chart/chart.service";
-import {AppStateService} from "../app-state.service";
+import {ConfigService} from "../config.service";
 import {PolymorpheusComponent} from "@tinkoff/ng-polymorpheus";
 import {SettingsModal} from "../settings/settings-modal/settings-modal";
 import {CurrentFigmaNodeService} from "../current-figma-node.service";
@@ -49,18 +49,18 @@ import {CurrentFigmaNodeService} from "../current-figma-node.service";
 })
 export class Footer {
     chartService = inject(ChartService)
-    appStateService = inject(AppStateService)
+    configService = inject(ConfigService)
     dialogService = inject(TuiDialogService)
     currentFigmaNodeService = inject(CurrentFigmaNodeService)
 
     label = computed(() => this.currentFigmaNodeService.hasNode() ? 'Update' : 'Create')
 
     createChart() {
-        this.chartService.createChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType);
+        this.chartService.createChart(this.configService.config());
     }
 
     regenerate() {
-        this.chartService.previewChart(this.appStateService.getCurrentChartConfig(), this.appStateService.selectedChartType, true)
+        this.chartService.previewChart(this.configService.config())
     }
 
     openSettings() {

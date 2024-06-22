@@ -1,14 +1,11 @@
 import {CurrentNode} from "../../plugin/code";
 import * as d3 from 'd3';
+import {Dimensions, Points} from "../models/data";
 
-export type Point = { x: number, y: number, chartX?: number, chartY?: number };
-export type Points = Point[];
-export type Dimensions = { width: number, height: number };
-
-export interface DataGenerator<Input, Data> {
+export interface DataGenerator<Input> {
     type: string;
 
-    generate(input: Input, dimensions: Dimensions): Data;
+    generate(input: Input, dimensions: Dimensions): Points[];
 }
 
 export type CoordinateGeneratorInput = {
@@ -19,7 +16,7 @@ export type CoordinateGeneratorInput = {
     distribution: 'random' | 'trend-up' | 'trend-down'
 };
 
-export class CoordinateGenerator implements DataGenerator<CoordinateGeneratorInput, Points[]> {
+export class CoordinateGenerator implements DataGenerator<CoordinateGeneratorInput> {
     type = 'coordinate';
 
     generate(input: CoordinateGeneratorInput, dimensions: Dimensions) {
@@ -88,21 +85,21 @@ export type SimpleGeneratorInput = {
     maxValue: number
 }
 
-export class SimpleGenerator implements DataGenerator<SimpleGeneratorInput, number[]> {
+export class SimpleGenerator implements DataGenerator<SimpleGeneratorInput> {
     type = 'simple';
 
-    generate(input: SimpleGeneratorInput, currentNode: CurrentNode): number[] {
-        let data: number[] = [];
+    generate(input: SimpleGeneratorInput, currentNode: CurrentNode) {
+        let data: Points[] = [[]];
 
         for (let i = 0; i < input.entries; i++) {
-            data.push(Math.random() * (input.maxValue || 100))
+            data[0].push({x: Math.random() * (input.maxValue || 100)})
         }
         return data;
     }
 }
 
 export class DataGeneratorFactory {
-    static create(type: string): DataGenerator<any, any> {
+    static create(type: string): DataGenerator<any> {
         switch (type) {
             case 'line':
             case 'area':

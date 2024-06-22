@@ -1,8 +1,4 @@
 :host {
   @apply flex-auto flex flex-col items-center justify-center relative;
-  @apply w-fit h-fit bg-gray-100;
-}
-
-#preview {
-  @apply w-full h-full;
+  @apply h-full bg-sky-100;
 }

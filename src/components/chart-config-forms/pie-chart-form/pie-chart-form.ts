@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {BaseChartForm} from "../base-chart-form";
 import {ReactiveFormsModule} from "@angular/forms";
 import {Slider} from "../../form-controls/slider/slider";
+import {PieChartConfig} from "../../../models/chart-types";
 
 @Component({
     selector: 'kj-pie-chart-form',
@@ -19,19 +20,6 @@ import {Slider} from "../../form-controls/slider/slider";
 })
 export class PieChartForm extends BaseChartForm {
     constructor() {
-        super();
-        const initialFormData = this.initialFormData
-        this.fg = this.fb.group({
-            entries: this.fb.nonNullable.control(initialFormData.entries),
-            padAngle: this.fb.nonNullable.control(initialFormData.padAngle),
-            cornerRadius: this.fb.nonNullable.control(initialFormData.cornerRadius)
-        })
-        this.init()
-    }
-
-    get defaultFormData(): any  {
-        return {
-            entries: 5
-        }
+        super(PieChartConfig);
     }
 }

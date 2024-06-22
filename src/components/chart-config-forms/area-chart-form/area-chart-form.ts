@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
-import {LineChartForm} from "../line-chart-form/line-chart-form";
 import {Slider} from '../../form-controls/slider/slider';
 import {Checkbox} from "../../form-controls/checkbox/checkbox";
 import {Select} from "../../form-controls/select/select";
 import {NgIf} from "@angular/common";
+import {AreaChartConfig} from "../../../models/chart-types";
+import {BaseChartForm} from "../base-chart-form";
 
 @Component({
     selector: 'kj-area-chart-form',
@@ -42,8 +43,8 @@ import {NgIf} from "@angular/common";
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AreaChartForm extends LineChartForm {
+export class AreaChartForm extends BaseChartForm {
     constructor() {
-        super();
+        super(AreaChartConfig);
     }
 }

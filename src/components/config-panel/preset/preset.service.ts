@@ -1,16 +1,13 @@
 import {inject, Injectable, signal} from "@angular/core";
 import {StorageService} from "../../storage.service";
 import {get} from "lodash";
-
-export type Preset = {
-    id: string
-    label: string
-    config: any
-}
+import {Preset} from "../../../models/preset";
+import {ConfigService} from "../../config.service";
 
 @Injectable()
 export class PresetService {
     private storageService = inject(StorageService)
+    private configService = inject(ConfigService)
     private _presets = signal<Preset[]>([])
     private _selectedPreset = signal<string>(null)
 
@@ -50,5 +47,7 @@ export class PresetService {
     updateSelectedPreset(id: string) {
         this.storageService.set('selectedPreset', id)
         this._selectedPreset.set(id)
+        const selectedPreset = this._presets().find(preset => preset.id === id);
+        this.configService.setConfig(selectedPreset.config)
     }
 }

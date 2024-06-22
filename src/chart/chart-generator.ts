@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import * as color from "color";
 import {isNil, upperFirst} from "lodash";
+import {Points} from "../models/data";
 
 const MARGIN = {top: 25, left: 25};
 
@@ -192,7 +193,7 @@ class BarChartGenerator extends BaseChartGenerator implements ChartGenerator {
     }
 
     vertical(input: any) {
-        const data = input.data as number[];
+        const data = (input.data as Points[])[0].map((p) => p.x);
         const barWidth = input.options?.barWidth;
         const showAxis = input.options?.showAxis;
         const {root, node, height, width} = this.createSvg(input)
@@ -226,7 +227,7 @@ class BarChartGenerator extends BaseChartGenerator implements ChartGenerator {
         return {svg: root, data}
     }
     horizontal(input: any) {
-        const data = input.data as number[];
+        const data = (input.data as Points[])[0].map((p) => p.x);
         const barWidth = input.options?.barWidth;
         const showAxis = input.options?.showAxis;
         const {root, node, width, height} = this.createSvg(input)
@@ -271,7 +272,7 @@ class BarChartGenerator extends BaseChartGenerator implements ChartGenerator {
 
 class DonutChartGenerator extends BaseChartGenerator implements ChartGenerator {
     generate(input: any) {
-        const data = input.data as number[];
+        const data = (input.data as Points[])[0].map((p) => p.x);
         const cornerRadius = input.options?.cornerRadius;
         const padAngle = input.options?.padAngle / 100;
         input.ignoreTranslate = true;
