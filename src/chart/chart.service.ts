@@ -4,7 +4,6 @@ import {DataGeneratorFactory} from "./data-generator";
 import {ChartGeneratorFactory} from "./chart-generator";
 import {CurrentFigmaNodeService} from "../components/current-figma-node.service";
 import {CreateChartMessage} from "../../plugin/plugin-message";
-import {DIMENSIONS} from "../../plugin/shared";
 import {ColorsService} from "../components/colors.service";
 
 @Injectable({
@@ -29,6 +28,7 @@ export class ChartService {
                 colors: this.colorsService.colors()
             }
         }
+        chartGenerator.input = input;
         const {svg} = chartGenerator.generate(input);
         const action: CreateChartMessage = {
             type: 'create-chart',
@@ -54,14 +54,15 @@ export class ChartService {
         const input = {
             data,
             type,
-            width: DIMENSIONS.width,
-            height: DIMENSIONS.previewHeight,
+            width: this.currentFigmaNodeService?.width,
+            height: this.currentFigmaNodeService?.height,
             options,
             isPreview: true,
             config: {
                 colors: this.colorsService.colors()
             }
         }
+        chartGenerator.input = input;
         chartGenerator.generate(input);
     }
 }

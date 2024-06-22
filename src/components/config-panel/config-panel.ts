@@ -14,49 +14,94 @@ import {AreaChartForm} from "../chart-config-forms/area-chart-form/area-chart-fo
 import {BarChartForm} from "../chart-config-forms/bar-chart-form/bar-chart-form";
 import {PieChartForm} from "../chart-config-forms/pie-chart-form/pie-chart-form";
 import {DonutChartForm} from "../chart-config-forms/donut-chart-form/donut-chart-form";
-import {FormBuilder, FormsModule} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
 import {BaseChartForm} from "../chart-config-forms/base-chart-form";
 import {ChartService} from "../../chart/chart.service";
 import {distinctUntilChanged, mergeMap, startWith} from "rxjs/operators";
-import {TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
-import {TuiSvgService} from "@taiga-ui/core";
+import {TuiAccordionModule, TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
+import {TuiGroupModule, TuiSvgService, TuiTextfieldControllerModule} from "@taiga-ui/core";
 import {tuiIconChevronDown} from "@taiga-ui/icons";
+import {CurrentFigmaNodeService} from "../current-figma-node.service";
+import {Preset} from "./preset/preset";
+import {UserChartConfig} from "../../chart/chart-generator";
+import {TuiInputColorModule} from "@tinkoff/tui-editor";
 
 @Component({
-    selector: 'kj-body',
+    selector: 'kj-config-panel',
     standalone: true,
     providers: [FormBuilder],
     template: `
-        <tui-select tuiTextfieldSize="s" [ngModel]="chartType" (ngModelChange)="onChartTypeChange($event)">
-            Chart Type
-            <input
-                    placeholder="Choose your chart"
-                    tuiTextfield
-            />
-            <tui-data-list-wrapper
-                    *tuiDataList
-                    [items]="chartTypes"
-            ></tui-data-list-wrapper>
-        </tui-select>
+        <kj-preset class="px-2"/>
+        <div class="px-2">
+            <tui-select tuiTextfieldSize="m" [ngModel]="chartType" (ngModelChange)="onChartTypeChange($event)">
+                Chart Type
+                <input
+                        placeholder="Choose your chart"
+                        tuiTextfield
+                />
+                <tui-data-list-wrapper
+                        *tuiDataList
+                        [items]="chartTypes"
+                ></tui-data-list-wrapper>
+            </tui-select>
+        </div>
+        <tui-accordion
+                [rounded]="false"
+                [formGroup]="userChartConfigForm"
+        >
+            <tui-accordion-item
+                    borders="top-bottom"
+                    size="s"
+                    formGroupName="display"
+            >
+                Display
+                <ng-template tuiAccordionItemContent>
+                    <h3>Labels</h3>
+                    <div tuiGroup>
+                        <tui-input-color>
+                            Background color
+                        </tui-input-color>
+                    </div>
+                </ng-template>
+            </tui-accordion-item>
+        </tui-accordion>
         <ng-container #vcr></ng-container>
     `,
-    styleUrls: ['./body.scss'],
+    styleUrls: ['./config-panel.scss'],
     imports: [
         TitleCasePipe,
         FormsModule,
         NgForOf,
         TuiSelectModule,
-        TuiDataListWrapperModule
+        TuiDataListWrapperModule,
+        TuiTextfieldControllerModule,
+        Preset,
+        TuiAccordionModule,
+        ReactiveFormsModule,
+        TuiGroupModule,
+        TuiInputColorModule
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Body implements OnInit {
+export class ConfigPanel implements OnInit {
     chartTypes = ['line', 'area', 'bar', 'pie', 'donut'];
     chartType = 'line'
     appStateService = inject(AppStateService);
     chartService = inject(ChartService);
+    formBuilder = inject(FormBuilder);
     registry: Map<string, Type<BaseChartForm>>;
+    userChartConfigForm = this.formBuilder.group({
+        display: this.formBuilder.group({
+            label: this.formBuilder.group({
+                color: this.formBuilder.control(['']),
+                fontFamily: this.formBuilder.control(['']),
+                fontSize: this.formBuilder.control(['']),
+            }),
+            showGrid: this.formBuilder.control([false]),
+            backgroundColor: this.formBuilder.control(['transparent']),
+        })
+    })
 
     @ViewChild('vcr', {read: ViewContainerRef, static: true}) container: ViewContainerRef;
 

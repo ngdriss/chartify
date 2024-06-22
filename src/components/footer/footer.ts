@@ -26,6 +26,7 @@ import {CurrentFigmaNodeService} from "../current-figma-node.service";
         <button
                 tuiIconButton
                 icon="tuiIconRefreshCcw"
+                appearance="secondary"
                 type="button"
                 class="regenerate-btn"
                 tuiHint="Randomize Data"
@@ -36,6 +37,7 @@ import {CurrentFigmaNodeService} from "../current-figma-node.service";
         <button
                 tuiIconButton
                 type="button"
+                appearance="outline"
                 icon="tuiIconSettings"
                 tuiHint="Settings"
                 tuiHintAppearance="onDark"

@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, inject, input} from '@angular/core';
 import {ControlContainer, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
 import {TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
+import {TuiTextfieldControllerModule} from "@taiga-ui/core";
 
 @Component({
     selector: 'kj-select',
@@ -11,11 +12,12 @@ import {TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
         NgForOf,
         TitleCasePipe,
         TuiSelectModule,
-        TuiDataListWrapperModule
+        TuiDataListWrapperModule,
+        TuiTextfieldControllerModule
     ],
     template: `
         <ng-container [formGroup]="fg">
-            <tui-select formControlName="{{name()}}" class="w-full">
+            <tui-select tuiTextfieldSize="m" formControlName="{{name()}}" class="w-full">
                 {{label()}}
                 <input
                         placeholder="Choose your hero"

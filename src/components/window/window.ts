@@ -4,11 +4,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'kj-window',
   standalone: true,
   template: `
-    <ng-content select="kj-preview"></ng-content>
-    <div class="window-body">
-      <ng-content select="kj-body"></ng-content>
-    </div>
-    <ng-content select="kj-footer"></ng-content>
+      <ng-content select="kj-header"></ng-content>
+      <div class="flex-1 overflow-none flex flex-nowrap">
+        <ng-content select="kj-preview"></ng-content>
+        <ng-content select="kj-config-panel"></ng-content>
+      </div>
+      <ng-content select="kj-footer"></ng-content>
   `,
   styleUrl: './window.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

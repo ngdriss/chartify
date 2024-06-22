@@ -13,9 +13,6 @@ import {TuiButtonModule, TuiSvgModule} from "@taiga-ui/core";
         <div id="preview"></div>
     `,
     styleUrl: './preview.scss',
-    styles: [`:host {
-      height: ${DIMENSIONS.previewHeight}px;
-    }`],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Preview {}

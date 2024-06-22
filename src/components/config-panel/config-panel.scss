@@ -1,0 +1,11 @@
+:host {
+  @apply h-full flex flex-col gap-4 border-l-[--tui-base-04] border-l py-4;
+  border-left-style: solid;
+}
+
+::ng-deep {
+  kj-line-chart-form, kj-bar-chart-form, kj-pie-chart-form, kj-area-chart-form, kj-donut-chart-form {
+    @apply px-2;
+    @apply flex flex-col gap-2
+  }
+}

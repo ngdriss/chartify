@@ -1,6 +1,6 @@
 :host {
-  @apply flex flex-col items-center justify-center relative;
-  @apply w-full h-fit bg-gray-100;
+  @apply flex-auto flex flex-col items-center justify-center relative;
+  @apply w-fit h-fit bg-gray-100;
 }
 
 #preview {

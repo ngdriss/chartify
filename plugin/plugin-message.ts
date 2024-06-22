@@ -22,10 +22,8 @@ export class ActionHandlerFactory {
         switch (action.type) {
             case 'create-chart':
                 return new CreateChartAction(action)
-            case 'load-colors':
-                return new LoadColorAction(action)
-            case 'set-colors':
-                return new SetColorAction(action)
+            case 'storage':
+                return new StorageAction(action)
             default:
                 throw new Error('Unknown action type')
         }
@@ -40,7 +38,7 @@ export class BaseAction {
     constructor(protected action: PluginMessage) {}
 }
 
-export class CreateChartAction extends BaseAction implements ActionHandler {
+class CreateChartAction extends BaseAction implements ActionHandler {
     execute() {
         this.createLineChart(this.action)
     }
@@ -64,17 +62,33 @@ export class CreateChartAction extends BaseAction implements ActionHandler {
     }
 }
 
-export class LoadColorAction extends BaseAction implements ActionHandler {
+class StorageAction extends BaseAction implements ActionHandler {
     execute() {
-        figma.clientStorage.getAsync('colors')
-            .then((colors) => figma.ui.postMessage({type: 'load-colors', colors}))
-    }
-}
+        const {operation, key, targetKey, payload} = this.action;
 
-class SetColorAction extends BaseAction implements ActionHandler {
-    async execute() {
-        await figma.clientStorage.setAsync('colors', this.action.colors)
+        switch (operation) {
+            case 'get':
+                this.get(key, targetKey)
+                return;
+            case 'set':
+                this.set(key, payload)
+                return;
+            case 'delete':
+                this.delete(key)
+                return;
+        }
     }
 
+    private get(key: any, targetKey: any) {
+        figma.clientStorage.getAsync(key)
+            .then((payload) => figma.ui.postMessage({type: targetKey, payload}))
+    }
+
+    private set(key: any, payload: any) {
+        figma.clientStorage.setAsync(key, payload).then()
+    }
+    private delete(key: any) {
+        figma.clientStorage.deleteAsync(key).then()
+    }
 }
 
