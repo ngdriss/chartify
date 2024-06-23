@@ -12,7 +12,7 @@ import {
 } from "@taiga-ui/experimental";
 import {TuiColorSelectorModule, TuiInputColorModule} from "@tinkoff/tui-editor";
 import {TuiActiveZoneModule} from "@taiga-ui/cdk";
-import * as Color from 'color';
+import Color from 'color';
 
 @Component({
     selector: 'kj-color-settings',

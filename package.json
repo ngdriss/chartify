@@ -51,7 +51,7 @@
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "18.0.5",
+    "@angular/build": "^18.0.5",
     "@angular/cli": "18.0.5",
     "@angular/compiler-cli": "18.0.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",

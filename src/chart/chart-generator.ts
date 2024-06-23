@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import * as color from "color";
+import color from "color";
 import {isNil, upperFirst} from "lodash";
 import {Points} from "../models/data";
 
