@@ -2,20 +2,15 @@ import {
     ChangeDetectionStrategy,
     Component, effect,
     Inject,
-    inject, Injector,
+    inject,
     signal,
     Type, viewChild,
     ViewContainerRef
 } from '@angular/core';
 import {ConfigService} from "../config.service";
-import {LineChartForm} from "../chart-config-forms/line-chart-form/line-chart-form";
-import {AreaChartForm} from "../chart-config-forms/area-chart-form/area-chart-form";
-import {BarChartForm} from "../chart-config-forms/bar-chart-form/bar-chart-form";
-import {PieChartForm} from "../chart-config-forms/pie-chart-form/pie-chart-form";
-import {DonutChartForm} from "../chart-config-forms/donut-chart-form/donut-chart-form";
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgForOf, TitleCasePipe} from "@angular/common";
-import {BaseChartForm} from "../chart-config-forms/base-chart-form";
+import {BaseChartForm} from "./chart-config-forms/base-chart-form";
 import {TuiAccordionModule, TuiDataListWrapperModule, TuiSelectModule} from "@taiga-ui/kit";
 import {TuiGroupModule, TuiSvgService, TuiTextfieldControllerModule} from "@taiga-ui/core";
 import {tuiIconChevronDown} from "@taiga-ui/icons";
@@ -23,13 +18,18 @@ import {Preset} from "./preset/preset";
 import {TuiInputColorModule} from "@tinkoff/tui-editor";
 import {getDefaultConfig} from "../../models/chart-types";
 import {DataService} from "../data.service";
+import {LineChartForm} from "./chart-config-forms/line-chart-form/line-chart-form";
+import {AreaChartForm} from "./chart-config-forms/area-chart-form/area-chart-form";
+import {BarChartForm} from "./chart-config-forms/bar-chart-form/bar-chart-form";
+import {PieChartForm} from "./chart-config-forms/pie-chart-form/pie-chart-form";
+import {DonutChartForm} from "./chart-config-forms/donut-chart-form/donut-chart-form";
+import {DisplayConfigForm} from "./display-config-form/display-config-form";
 
 @Component({
     selector: 'kj-config-panel',
     standalone: true,
     providers: [FormBuilder],
     template: `
-        <kj-preset class="px-2"/>
         <div class="px-2">
             <tui-select tuiTextfieldSize="m" [ngModel]="chartType()" (ngModelChange)="onChartTypeChange($event)">
                 Chart Type
@@ -45,21 +45,22 @@ import {DataService} from "../data.service";
         </div>
         <tui-accordion
                 [rounded]="false"
+                [closeOthers]="false"
         >
             <tui-accordion-item
                     borders="top-bottom"
                     size="s"
+                    [open]="true"
             >
                 Display
                 <ng-template tuiAccordionItemContent>
-                    <tui-input-color tuiTextfieldSize="m">
-                        Labels color
-                    </tui-input-color>
+                    <kj-display-config-form/>
                 </ng-template>
             </tui-accordion-item>
             <tui-accordion-item
                     borders="top-bottom"
                     size="s"
+                    [open]="true"
                     [disabled]="!chartType()"
                     (openChange)="whenOpenChange($event)"
             >
@@ -82,7 +83,8 @@ import {DataService} from "../data.service";
         TuiAccordionModule,
         ReactiveFormsModule,
         TuiGroupModule,
-        TuiInputColorModule
+        TuiInputColorModule,
+        DisplayConfigForm
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -94,7 +96,7 @@ export class ConfigPanel {
     registry: Map<string, Type<BaseChartForm>>
 
     container = viewChild('vcr', {read: ViewContainerRef})
-    isConfigOpen = signal<boolean>(false)
+    isConfigOpen = signal<boolean>(true)
     constructor(@Inject(TuiSvgService) tuiSvgService: TuiSvgService) {
         this.registry = new Map([
             ['line', LineChartForm],

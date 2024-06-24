@@ -8,9 +8,9 @@ import {isNil} from "lodash";
     providedIn: 'root'
 })
 export class DataService {
-    currentFigmaNodeService = inject(CurrentFigmaNodeService)
-    cache = {}
-    lastConfig: Config['chartConfig']
+    private currentFigmaNodeService = inject(CurrentFigmaNodeService)
+    private cache = {}
+    private lastConfig: Config['chartConfig']
     getData(config: Config['chartConfig'], purge?: boolean, compareWithLast?: boolean) {
         const key = DataGeneratorFactory.getType(config.type)
         const pointGenerator = DataGeneratorFactory.create(config.type)

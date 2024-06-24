@@ -3,6 +3,7 @@ import {Meta} from "./type-attributes"
 export type ChartDataDistribution = 'random' | 'trend-up' | 'trend-down'
 export type ChartCurveType = 'simple' | 'curved'
 export type ChartDirection = 'vertical' | 'horizontal'
+export type ChartPattern = 'stripes' | 'dots' | 'lines'
 
 export class LineChartConfig {
     static default: LineChartConfig = {
@@ -14,6 +15,7 @@ export class LineChartConfig {
         displayPoints: false,
         dashed: false,
         showAxis: true,
+        showLegend: true,
         rangeX: 100,
         rangeY: 100
     }
@@ -25,6 +27,7 @@ export class LineChartConfig {
     @Meta displayPoints: boolean
     @Meta dashed: boolean
     @Meta showAxis?: boolean
+    @Meta showLegend?: boolean
     @Meta rangeX?: number
     @Meta rangeY?: number
 }
@@ -39,6 +42,8 @@ export class AreaChartConfig {
         displayPoints: false,
         dashed: false,
         showAxis: true,
+        showLegend: true,
+        stacked: true,
         rangeX: 100,
         rangeY: 100
     }
@@ -50,8 +55,11 @@ export class AreaChartConfig {
     @Meta displayPoints: boolean
     @Meta dashed: boolean
     @Meta showAxis?: boolean
+    @Meta showLegend?: boolean
     @Meta rangeX?: number
     @Meta rangeY?: number
+    @Meta stacked?: boolean
+    @Meta patterns?: ChartPattern[]
 }
 
 export class BarChartConfig {
@@ -61,7 +69,8 @@ export class BarChartConfig {
         maxValue: 100,
         barWidth: 10,
         direction: "vertical",
-        showAxis: true
+        showAxis: true,
+        showLegend: true
     }
     @Meta type: 'bar'
     @Meta entries: number
@@ -69,6 +78,8 @@ export class BarChartConfig {
     @Meta barWidth: number
     @Meta direction: ChartDirection
     @Meta showAxis: boolean
+    @Meta showLegend?: boolean
+    @Meta patterns?: ChartPattern[]
 }
 
 export class DonutChartConfig {
@@ -77,29 +88,35 @@ export class DonutChartConfig {
         entries: 5,
         padAngle: 0,
         innerRadius: 75,
-        cornerRadius: 0
+        cornerRadius: 0,
+        showLegend: true,
     }
     @Meta type: 'donut'
     @Meta entries: number
     @Meta innerRadius: number
     @Meta padAngle: number
     @Meta cornerRadius: number
+    @Meta showLegend?: boolean
+    @Meta patterns?: ChartPattern[]
 }
 
 export class PieChartConfig {
     static default: PieChartConfig = {
         type: 'pie',
         entries: 5,
-        cornerRadius: 0
+        cornerRadius: 0,
+        showLegend: true,
     }
     @Meta type: 'pie'
     @Meta entries: number
     @Meta cornerRadius: number
+    @Meta showLegend?: boolean
+    @Meta patterns?: ChartPattern[]
 }
 
 export type ChartTypes = LineChartConfig | AreaChartConfig | BarChartConfig | DonutChartConfig | PieChartConfig
 
-export function getDefaultConfig(type: string) {
+export function getDefaultConfig(type: ChartTypes['type']) {
     switch (type) {
         case "line":
             return LineChartConfig.default;

@@ -5,6 +5,7 @@ import {ConfigService} from "../config.service";
 import {PolymorpheusComponent} from "@tinkoff/ng-polymorpheus";
 import {SettingsModal} from "../settings/settings-modal/settings-modal";
 import {CurrentFigmaNodeService} from "../current-figma-node.service";
+import {DataService} from "../data.service";
 
 @Component({
     selector: 'kj-footer',
@@ -48,10 +49,11 @@ import {CurrentFigmaNodeService} from "../current-figma-node.service";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Footer {
-    chartService = inject(ChartService)
-    configService = inject(ConfigService)
-    dialogService = inject(TuiDialogService)
-    currentFigmaNodeService = inject(CurrentFigmaNodeService)
+    private chartService = inject(ChartService)
+    private configService = inject(ConfigService)
+    private dataService = inject(DataService)
+    private dialogService = inject(TuiDialogService)
+    private currentFigmaNodeService = inject(CurrentFigmaNodeService)
 
     label = computed(() => this.currentFigmaNodeService.hasNode() ? 'Update' : 'Create')
 
@@ -60,6 +62,7 @@ export class Footer {
     }
 
     regenerate() {
+        this.configService.updateConfig('data', this.dataService.getData(this.configService.config().chartConfig, true))
         this.chartService.previewChart(this.configService.config())
     }
 

@@ -1,6 +1,6 @@
-import { provideAnimations } from "@angular/platform-browser/animations";
-import {importProvidersFrom} from "@angular/core";
 import 'zone.js';
+import {provideAnimations} from "@angular/platform-browser/animations";
+import {importProvidersFrom} from "@angular/core";
 import {EntryComponent} from './entry.component';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {provideHttpClient} from "@angular/common/http";
@@ -12,11 +12,15 @@ import {
     TUI_BUTTON_OPTIONS,
     TUI_BUTTON_DEFAULT_OPTIONS, TUI_CHECKBOX_OPTIONS, TUI_CHECKBOX_DEFAULT_OPTIONS
 } from "@taiga-ui/core";
-import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
+import {NgDompurifySanitizer} from "@tinkoff/ng-dompurify";
 import * as icons from "@taiga-ui/icons";
 import {keys, reduce} from "lodash";
 import {TUI_EDITOR_COLOR_SELECTOR_MODE_NAMES} from "@tinkoff/tui-editor";
-import {TUI_SLIDER_DEFAULT_OPTIONS, TUI_SLIDER_OPTIONS} from "@taiga-ui/kit";
+import {
+    TUI_SLIDER_DEFAULT_OPTIONS,
+    TUI_SLIDER_OPTIONS
+} from "@taiga-ui/kit";
+import {provideInitializers} from "./components/initializer";
 
 const ICONS: any = reduce(keys(icons), (acc, key) => {
     acc[key] = icons[key];
@@ -59,7 +63,8 @@ bootstrapApplication(EntryComponent, {
         },
         tuiSvgOptionsProvider({
             srcProcessor: (src) => ICONS[src as string]
-        })
-    ],
+        }),
+        provideInitializers()
+    ]
 })
     .catch(err => console.error(err))

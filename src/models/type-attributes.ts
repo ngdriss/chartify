@@ -6,5 +6,5 @@ export function Meta(target: any, propertyKey: string) {
 }
 
 export function getTypeMetadata(target: any): Record<string, any> {
-    return target.constructor._metadata || target.prototype.constructor._metadata || {};
+    return target?.constructor?._metadata || target?.prototype?.constructor?._metadata || {};
 }

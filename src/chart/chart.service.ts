@@ -1,7 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {FigmaService} from "../components/figma.service";
-import {DataGeneratorFactory} from "./data-generator";
-import {ChartGeneratorFactory} from "./chart-generator";
+import {ChartGeneratorConfig, ChartGeneratorFactory} from "./generators/chart-generator";
 import {CurrentFigmaNodeService} from "../components/current-figma-node.service";
 import {CreateChartMessage} from "../../plugin/plugin-message";
 import {ColorsService} from "../components/colors.service";
@@ -16,24 +15,10 @@ export class ChartService {
     colorsService = inject(ColorsService);
 
     createChart(config: Config) {
-        const type = config?.chartConfig?.type
-        const chartGenerator = ChartGeneratorFactory.create(type);
-        const data = config.data;
-        const input = {
-            data,
-            type,
-            width: this.currentFigmaNodeService?.width,
-            height: this.currentFigmaNodeService?.height,
-            options: config.chartConfig,
-            config: {
-                colors: this.colorsService.colors()
-            }
-        }
-        chartGenerator.input = input;
-        const {svg} = chartGenerator.generate(input);
+        const {root} = this.previewChart(config)
         const action: CreateChartMessage = {
             type: 'create-chart',
-            svg: svg.node().outerHTML,
+            svg: root.node().outerHTML,
             nodeId: this.currentFigmaNodeService?.id
         }
         this.figmaService.sendAction(action)
@@ -41,20 +26,14 @@ export class ChartService {
 
     previewChart(config: Config) {
         const type = config?.chartConfig?.type
-        const chartGenerator = ChartGeneratorFactory.create(type);
-        const data = config.data;
-        const input = {
-            data,
-            type,
-            width: this.currentFigmaNodeService?.width,
-            height: this.currentFigmaNodeService?.height,
-            options: config.chartConfig,
-            isPreview: true,
-            config: {
+        const chartGeneratorConfig: ChartGeneratorConfig = {
+            config,
+            meta: {
                 colors: this.colorsService.colors()
-            }
+            },
+            isPreview: true
         }
-        chartGenerator.input = input;
-        chartGenerator.generate(input);
+        const chartGenerator = ChartGeneratorFactory.create(type, chartGeneratorConfig);
+        return chartGenerator.generate();
     }
 }

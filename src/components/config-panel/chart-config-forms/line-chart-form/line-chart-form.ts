@@ -1,11 +1,11 @@
-import {ChangeDetectionStrategy, Component, Inject, Optional} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ReactiveFormsModule} from "@angular/forms";
 import {BaseChartForm} from "../base-chart-form";
-import {Checkbox} from "../../form-controls/checkbox/checkbox";
-import {Select} from "../../form-controls/select/select";
-import {Slider} from "../../form-controls/slider/slider";
+import {Checkbox} from "../../../form-controls/checkbox/checkbox";
+import {Select} from "../../../form-controls/select/select";
+import {Slider} from "../../../form-controls/slider/slider";
 import {NgIf} from "@angular/common";
-import {LineChartConfig} from "../../../models/chart-types";
+import {LineChartConfig} from "../../../../models/chart-types";
 
 @Component({
     selector: 'kj-line-chart-form',
@@ -31,6 +31,7 @@ import {LineChartConfig} from "../../../models/chart-types";
                 <kj-checkbox name="displayPoints" label="Display Points"/>
                 <kj-checkbox name="dashed" label="Dashed"/>
                 <kj-checkbox name="showAxis" label="Show Axis"/>
+                <kj-checkbox name="showLegend" label="Show Legend"/>
             </div>
             <div *ngIf="fg.get('showAxis').value" class="input-inline">
                 <div>

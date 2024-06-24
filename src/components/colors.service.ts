@@ -2,11 +2,11 @@ import {computed, inject, Injectable, signal} from "@angular/core";
 import * as d3 from "d3";
 import {StorageService} from "./storage.service";
 import {FigmaService} from "./figma.service";
+import {Initializer} from "./initializer";
+import {forkJoin} from "rxjs";
 
-@Injectable({
-    providedIn: 'root'
-})
-export class ColorsService {
+@Injectable({providedIn: 'root'})
+export class ColorsService implements Initializer {
     storageService = inject(StorageService)
     figmaService = inject(FigmaService)
     // @ts-ignore
@@ -30,10 +30,12 @@ export class ColorsService {
         return map
     })
 
-    constructor() {
-        this.storageService.get('colors', 'load-colors', (action) => this._colors.set(action.payload || d3.schemeCategory10))
-        this.figmaService.onAction('palettes', (action) => this._palettes.set(action.palettes || []))
-    }
+    start() {
+        return forkJoin([
+            this.storageService.get('colors', 'load-colors', (action) => this._colors.set(action.payload || d3.schemeCategory10)),
+            this.figmaService.onAction('palettes', (action) => this._palettes.set(action.palettes || []))
+        ])
+    }   
 
     addColor(color: string) {
         const colors = [...this._colors(), color]
